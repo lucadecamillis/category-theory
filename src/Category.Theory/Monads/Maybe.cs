@@ -79,6 +79,34 @@ public sealed class Maybe<T> : Maybe
         }
     }
 
+    public Maybe<TResult> SelectMany<TResult, TCollection>(
+        Func<T, Maybe<TCollection>> collectionSelector,
+        Func<T, TCollection, TResult> resultSelector)
+    {
+        if (collectionSelector == null)
+        {
+            throw new ArgumentNullException(nameof(collectionSelector));
+        }
+
+        if (resultSelector == null)
+        {
+            throw new ArgumentNullException(nameof(resultSelector));
+        }
+
+        if (!this.HasItem)
+        {
+            return Empty<TResult>();
+        }
+
+        Maybe<TCollection> subElement = collectionSelector(this.Item);
+        if (!subElement.HasItem)
+        {
+            return Empty<TResult>();
+        }
+
+        return FromItem(resultSelector(this.Item, subElement.Item));
+    }
+
     public Maybe<T> Where(Func<T, bool> predicate)
     {
         if (predicate == null)
@@ -138,7 +166,7 @@ public sealed class Maybe<T> : Maybe
 
     public override bool Equals(object obj)
     {
-        if(obj is Maybe<T> other)
+        if (obj is Maybe<T> other)
         {
             return object.Equals(this.Item, other.Item);
         }
