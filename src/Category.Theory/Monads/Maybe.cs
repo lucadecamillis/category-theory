@@ -107,6 +107,18 @@ public sealed class Maybe<T> : Maybe
         return FromItem(resultSelector(this.Item, subElement.Item));
     }
 
+    public TResult Match<TResult>(Func<T, TResult> someFunc, Func<TResult> noneFunc)
+    {
+        if (this.HasItem)
+        {
+            return someFunc(this.Item);
+        }
+        else
+        {
+            return noneFunc();
+        }
+    }
+
     public Maybe<T> Where(Func<T, bool> predicate)
     {
         if (predicate == null)
