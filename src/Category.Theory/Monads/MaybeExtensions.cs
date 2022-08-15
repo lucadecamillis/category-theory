@@ -12,9 +12,9 @@ public static class MaybeExtensions
     /// <returns></returns>
     public static T? ToNullable<T>(this Maybe<T> maybe) where T : struct
     {
-        if (maybe.HasItem)
+        if (maybe.HasValue())
         {
-            return maybe.Item;
+            return maybe.GetValueOrThrow();
         }
 
         return null;
@@ -30,10 +30,10 @@ public static class MaybeExtensions
     {
         if (nullable.HasValue)
         {
-            return Maybe.FromItem(nullable.Value);
+            return Maybe.Some(nullable.Value);
         }
 
-        return Maybe.Empty<T>();
+        return Maybe.None<T>();
     }
 
     /// <summary>
@@ -46,12 +46,7 @@ public static class MaybeExtensions
     /// <returns></returns>
     public static Maybe<string> SelectString<T>(this Maybe<T> maybe, Func<T, string> selector)
     {
-        if (maybe.HasItem)
-        {
-            return TrySelectString(maybe.Item, selector);
-        }
-
-        return Maybe.Empty<string>();
+        return maybe.SelectMany(e => TrySelectString(e, selector));
     }
 
     /// <summary>
@@ -66,16 +61,16 @@ public static class MaybeExtensions
     {
         if (candidate == null)
         {
-            return Maybe.Empty<string>();
+            return Maybe.None<string>();
         }
 
         string stringValue = selector(candidate);
         if (!string.IsNullOrWhiteSpace(stringValue))
         {
-            return Maybe.FromItem(stringValue);
+            return Maybe.Some(stringValue);
         }
 
-        return Maybe.Empty<string>();
+        return Maybe.None<string>();
     }
 
     /// <summary>
@@ -92,8 +87,8 @@ public static class MaybeExtensions
         }
 
         return items
-            .Where(i => i.HasItem)
-            .Select(i => i.Item);
+            .Where(i => i.HasValue())
+            .Select(i => i.GetValueOrThrow());
     }
 
     /// <summary>
@@ -108,16 +103,16 @@ public static class MaybeExtensions
     {
         if (dictionary.NullOrEmpty())
         {
-            return Maybe.Empty<T>();
+            return Maybe.None<T>();
         }
 
         T value;
         if (dictionary.TryGetValue(key, out value))
         {
-            return Maybe.FromItem(value);
+            return Maybe.Some(value);
         }
 
-        return Maybe.Empty<T>();
+        return Maybe.None<T>();
     }
 
     /// <summary>
@@ -132,7 +127,7 @@ public static class MaybeExtensions
     {
         if (dictionary.NullOrEmpty())
         {
-            return Maybe.Empty<T>();
+            return Maybe.None<T>();
         }
 
         Maybe<T> value;
@@ -141,7 +136,7 @@ public static class MaybeExtensions
             return value;
         }
 
-        return Maybe.Empty<T>();
+        return Maybe.None<T>();
     }
 
     /// <summary>
@@ -157,16 +152,16 @@ public static class MaybeExtensions
         if (source.NullOrEmpty())
         {
             // Empty collection
-            return Maybe.Empty<T>();
+            return Maybe.None<T>();
         }
 
         if (idx < 0 || idx >= source.Count)
         {
             // Index out of bound
-            return Maybe.Empty<T>();
+            return Maybe.None<T>();
         }
 
-        return Maybe.FromItem(source[idx]);
+        return Maybe.Some(source[idx]);
     }
 
     /// <summary>
@@ -181,10 +176,10 @@ public static class MaybeExtensions
         T element;
         if (source.IsSingle(out element))
         {
-            return Maybe.FromItem(element);
+            return Maybe.Some(element);
         }
 
-        return Maybe.Empty<T>();
+        return Maybe.None<T>();
     }
 
     /// <summary>
@@ -198,10 +193,10 @@ public static class MaybeExtensions
     {
         if (source.NullOrEmpty())
         {
-            return Maybe.Empty<T>();
+            return Maybe.None<T>();
         }
 
-        return Maybe.FromItem(source.First());
+        return Maybe.Some(source.First());
     }
 
     /// <summary>
@@ -220,15 +215,18 @@ public static class MaybeExtensions
             throw new ArgumentNullException(nameof(selector));
         }
 
-        if (maybe.HasItem)
+        return maybe
+            .SelectMany(e => CheckEmptyCollection(selector(e)))
+            .GetValueOrFallback(Enumerable.Empty<TResult>());
+    }
+
+    private static Maybe<IEnumerable<T>> CheckEmptyCollection<T>(IEnumerable<T> collection)
+    {
+        if (collection.NullOrEmpty())
         {
-            IEnumerable<TResult> result = selector(maybe.Item);
-            if (!result.NullOrEmpty())
-            {
-                return result;
-            }
+            return Maybe.None<IEnumerable<T>>();
         }
 
-        return Enumerable.Empty<TResult>();
+        return Maybe.Some(collection);
     }
 }

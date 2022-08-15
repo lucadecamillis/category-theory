@@ -2,26 +2,63 @@ namespace Category.Theory.Monads;
 
 public sealed class Maybe<T> : Maybe
 {
-    internal static Maybe<T> Empty { get; } = new Maybe<T>();
+    internal static Maybe<T> None { get; } = new Maybe<T>();
 
-    public bool HasItem { get; }
+    internal static Maybe<T> Some(T value)
+    {
+        return new Maybe<T>(value);
+    }
 
-    public T Item { get; }
+    readonly bool hasValue;
+
+    readonly T value;
 
     private Maybe()
     {
-        this.HasItem = false;
+        this.hasValue = false;
     }
 
-    internal Maybe(T item)
+    private Maybe(T value)
     {
-        if (item == null)
+        if (value == null)
         {
-            throw new ArgumentNullException(nameof(item));
+            throw new ArgumentNullException(nameof(value));
         }
 
-        this.HasItem = true;
-        this.Item = item;
+        this.hasValue = true;
+        this.value = value;
+    }
+
+    public bool HasValue()
+    {
+        return this.hasValue;
+    }
+
+    public T GetValueOrThrow(string errorMessage = null)
+    {
+        if (!this.HasValue())
+        {
+            throw new InvalidOperationException(errorMessage ?? $"No value set on maybe");
+        }
+
+        return this.value;
+    }
+
+    public T GetValueOrFallback(T fallbackValue)
+    {
+        if (fallbackValue == null)
+        {
+            throw new ArgumentNullException(nameof(fallbackValue));
+        }
+
+        if (this.HasValue())
+        {
+            return this.value;
+        }
+        else
+        {
+            return fallbackValue;
+        }
     }
 
     public Maybe<TResult> Select<TResult>(Func<T, TResult> selector)
@@ -31,16 +68,16 @@ public sealed class Maybe<T> : Maybe
             throw new ArgumentNullException(nameof(selector));
         }
 
-        if (this.HasItem)
+        if (this.HasValue())
         {
-            TResult result = selector(this.Item);
+            TResult result = selector(this.value);
             if (result != null)
             {
-                return FromItem(result);
+                return Some(result);
             }
         }
 
-        return Empty<TResult>();
+        return None<TResult>();
     }
 
     public Maybe<TResult> Select<TResult>(Func<T, TResult?> selector) where TResult : struct
@@ -50,16 +87,16 @@ public sealed class Maybe<T> : Maybe
             throw new ArgumentNullException(nameof(selector));
         }
 
-        if (this.HasItem)
+        if (this.HasValue())
         {
-            TResult? result = selector(this.Item);
+            TResult? result = selector(this.value);
             if (result.HasValue)
             {
-                return FromItem(result.Value);
+                return Some(result.Value);
             }
         }
 
-        return Empty<TResult>();
+        return None<TResult>();
     }
 
     public Maybe<TResult> SelectMany<TResult>(Func<T, Maybe<TResult>> selector)
@@ -69,13 +106,13 @@ public sealed class Maybe<T> : Maybe
             throw new ArgumentNullException(nameof(selector));
         }
 
-        if (this.HasItem)
+        if (this.HasValue())
         {
-            return selector(this.Item);
+            return selector(this.value);
         }
         else
         {
-            return Empty<TResult>();
+            return None<TResult>();
         }
     }
 
@@ -93,25 +130,25 @@ public sealed class Maybe<T> : Maybe
             throw new ArgumentNullException(nameof(resultSelector));
         }
 
-        if (!this.HasItem)
+        if (!this.HasValue())
         {
-            return Empty<TResult>();
+            return None<TResult>();
         }
 
-        Maybe<TCollection> subElement = collectionSelector(this.Item);
-        if (!subElement.HasItem)
+        Maybe<TCollection> subElement = collectionSelector(this.value);
+        if (!subElement.HasValue())
         {
-            return Empty<TResult>();
+            return None<TResult>();
         }
 
-        return FromItem(resultSelector(this.Item, subElement.Item));
+        return Some(resultSelector(this.value, subElement.value));
     }
 
     public TResult Match<TResult>(Func<T, TResult> someFunc, Func<TResult> noneFunc)
     {
-        if (this.HasItem)
+        if (this.HasValue())
         {
-            return someFunc(this.Item);
+            return someFunc(this.value);
         }
         else
         {
@@ -126,61 +163,44 @@ public sealed class Maybe<T> : Maybe
             throw new ArgumentNullException(nameof(predicate));
         }
 
-        if (this.HasItem && predicate(this.Item))
+        if (this.HasValue() && predicate(this.value))
         {
             return this;
         }
         else
         {
-            return Empty<T>();
+            return None<T>();
         }
     }
 
     public Maybe<TResult> OfType<TResult>()
     {
-        if (this.HasItem)
+        if (this.HasValue())
         {
-            return OfType<TResult>(this.Item);
+            return OfType<TResult>(this.value);
         }
 
-        return Empty<TResult>();
+        return None<TResult>();
     }
 
     public void Exec(Action<T> action)
     {
-        if (this.HasItem)
+        if (this.HasValue())
         {
-            action?.Invoke(this.Item);
-        }
-    }
-
-    public T GetValueOrFallback(T fallbackValue)
-    {
-        if (fallbackValue == null)
-        {
-            throw new ArgumentNullException(nameof(fallbackValue));
-        }
-
-        if (this.HasItem)
-        {
-            return this.Item;
-        }
-        else
-        {
-            return fallbackValue;
+            action?.Invoke(this.value);
         }
     }
 
     public bool EqualsTo(T item)
     {
-        return this.HasItem && Equals(this.Item, item);
+        return this.HasValue() && Equals(this.value, item);
     }
 
     public override bool Equals(object obj)
     {
         if (obj is Maybe<T> other)
         {
-            return object.Equals(this.Item, other.Item);
+            return object.Equals(this.value, other.value);
         }
 
         return false;
@@ -188,12 +208,12 @@ public sealed class Maybe<T> : Maybe
 
     public override int GetHashCode()
     {
-        return this.HasItem ? this.Item.GetHashCode() : 0;
+        return this.HasValue() ? this.value.GetHashCode() : 0;
     }
 
     public override string ToString()
     {
-        return this.HasItem ? this.Item.ToString() : nameof(Empty);
+        return this.HasValue() ? this.value.ToString() : nameof(None);
     }
 }
 
@@ -204,14 +224,14 @@ public class Maybe
 
     }
 
-    public static Maybe<T> FromItem<T>(T item)
+    public static Maybe<T> Some<T>(T item)
     {
-        return new Maybe<T>(item);
+        return Maybe<T>.Some(item);
     }
 
-    public static Maybe<T> Empty<T>()
+    public static Maybe<T> None<T>()
     {
-        return Maybe<T>.Empty;
+        return Maybe<T>.None;
     }
 
     /// <summary>
@@ -224,10 +244,10 @@ public class Maybe
     {
         if (item is null)
         {
-            return Maybe<T>.Empty;
+            return Maybe<T>.None;
         }
 
-        return FromItem(item);
+        return Some(item);
     }
 
     /// <summary>
@@ -240,9 +260,9 @@ public class Maybe
     {
         if (o is T t)
         {
-            return FromItem(t);
+            return Some(t);
         }
 
-        return Empty<T>();
+        return None<T>();
     }
 }
