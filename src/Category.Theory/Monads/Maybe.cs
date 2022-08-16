@@ -156,6 +156,18 @@ public sealed class Maybe<T> : Maybe
         }
     }
 
+    public void Iter(Action<T> someAction, Action noneAction)
+    {
+        if (this.HasValue())
+        {
+            someAction(this.value);
+        }
+        else
+        {
+            noneAction();
+        }
+    }
+
     public Maybe<T> Where(Func<T, bool> predicate)
     {
         if (predicate == null)
