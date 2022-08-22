@@ -4,6 +4,43 @@ namespace Category.Theory.Monads;
 
 public static class MaybeExtensions
 {
+    public static Maybe<TResult> Select<T, TResult>(
+        this Maybe<T> maybe,
+        Func<T, TResult?> selector) where TResult : struct
+    {
+        if (selector == null)
+        {
+            throw new ArgumentNullException(nameof(selector));
+        }
+
+        return maybe.SelectMany(e => NullableToMaybe(selector(e)));
+    }
+
+    public static Maybe<TResult> SelectMany<T, TResult, TCollection>(
+        this Maybe<T> maybe,
+        Func<T, Maybe<TCollection>> collectionSelector,
+        Func<T, TCollection, TResult> resultSelector)
+    {
+        if (maybe == null)
+        {
+            throw new ArgumentNullException(nameof(maybe));
+        }
+
+        if (collectionSelector == null)
+        {
+            throw new ArgumentNullException(nameof(collectionSelector));
+        }
+
+        if (resultSelector == null)
+        {
+            throw new ArgumentNullException(nameof(resultSelector));
+        }
+
+        return maybe
+            .SelectMany(collectionSelector)
+            .SelectMany(c => maybe.Select(t => resultSelector(t, c)));
+    }
+
     /// <summary>
     /// Convert the given maybe to nullable (for value types)
     /// </summary>
@@ -228,5 +265,15 @@ public static class MaybeExtensions
         }
 
         return Maybe.Some(collection);
+    }
+
+    private static Maybe<T> NullableToMaybe<T>(T? nullableValue) where T : struct
+    {
+        if (nullableValue.HasValue)
+        {
+            return new Some<T>(nullableValue.Value);
+        }
+
+        return None<T>.Instance;
     }
 }

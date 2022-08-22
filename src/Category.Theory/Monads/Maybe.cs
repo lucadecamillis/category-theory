@@ -1,235 +1,39 @@
 namespace Category.Theory.Monads;
 
-public sealed class Maybe<T> : Maybe
+public abstract class Maybe<T>
 {
-    internal static Maybe<T> None { get; } = new Maybe<T>();
-
-    internal static Maybe<T> Some(T value)
+    protected Maybe()
     {
-        return new Maybe<T>(value);
+
     }
 
-    readonly bool hasValue;
+    public abstract bool HasValue();
 
-    readonly T value;
+    public abstract T GetValueOrThrow(string errorMessage = null);
 
-    private Maybe()
-    {
-        this.hasValue = false;
-    }
+    public abstract T GetValueOrFallback(T fallbackValue);
 
-    private Maybe(T value)
-    {
-        if (value == null)
-        {
-            throw new ArgumentNullException(nameof(value));
-        }
+    public abstract Maybe<TResult> Select<TResult>(Func<T, TResult> selector);
 
-        this.hasValue = true;
-        this.value = value;
-    }
+    public abstract Maybe<TResult> SelectMany<TResult>(Func<T, Maybe<TResult>> selector);
 
-    public bool HasValue()
-    {
-        return this.hasValue;
-    }
+    public abstract TResult Match<TResult>(Func<T, TResult> someFunc, Func<TResult> noneFunc);
 
-    public T GetValueOrThrow(string errorMessage = null)
-    {
-        if (!this.HasValue())
-        {
-            throw new InvalidOperationException(errorMessage ?? $"No value set on maybe");
-        }
+    public abstract void Iter(Action<T> someAction, Action noneAction);
 
-        return this.value;
-    }
+    public abstract Maybe<T> Where(Func<T, bool> predicate);
 
-    public T GetValueOrFallback(T fallbackValue)
-    {
-        if (fallbackValue == null)
-        {
-            throw new ArgumentNullException(nameof(fallbackValue));
-        }
+    public abstract void Exec(Action<T> action);
 
-        if (this.HasValue())
-        {
-            return this.value;
-        }
-        else
-        {
-            return fallbackValue;
-        }
-    }
-
-    public Maybe<TResult> Select<TResult>(Func<T, TResult> selector)
-    {
-        if (selector == null)
-        {
-            throw new ArgumentNullException(nameof(selector));
-        }
-
-        if (this.HasValue())
-        {
-            TResult result = selector(this.value);
-            if (result != null)
-            {
-                return Some(result);
-            }
-        }
-
-        return None<TResult>();
-    }
-
-    public Maybe<TResult> Select<TResult>(Func<T, TResult?> selector) where TResult : struct
-    {
-        if (selector == null)
-        {
-            throw new ArgumentNullException(nameof(selector));
-        }
-
-        if (this.HasValue())
-        {
-            TResult? result = selector(this.value);
-            if (result.HasValue)
-            {
-                return Some(result.Value);
-            }
-        }
-
-        return None<TResult>();
-    }
-
-    public Maybe<TResult> SelectMany<TResult>(Func<T, Maybe<TResult>> selector)
-    {
-        if (selector == null)
-        {
-            throw new ArgumentNullException(nameof(selector));
-        }
-
-        if (this.HasValue())
-        {
-            return selector(this.value);
-        }
-        else
-        {
-            return None<TResult>();
-        }
-    }
-
-    public Maybe<TResult> SelectMany<TResult, TCollection>(
-        Func<T, Maybe<TCollection>> collectionSelector,
-        Func<T, TCollection, TResult> resultSelector)
-    {
-        if (collectionSelector == null)
-        {
-            throw new ArgumentNullException(nameof(collectionSelector));
-        }
-
-        if (resultSelector == null)
-        {
-            throw new ArgumentNullException(nameof(resultSelector));
-        }
-
-        if (!this.HasValue())
-        {
-            return None<TResult>();
-        }
-
-        Maybe<TCollection> subElement = collectionSelector(this.value);
-        if (!subElement.HasValue())
-        {
-            return None<TResult>();
-        }
-
-        return Some(resultSelector(this.value, subElement.value));
-    }
-
-    public TResult Match<TResult>(Func<T, TResult> someFunc, Func<TResult> noneFunc)
-    {
-        if (this.HasValue())
-        {
-            return someFunc(this.value);
-        }
-        else
-        {
-            return noneFunc();
-        }
-    }
-
-    public void Iter(Action<T> someAction, Action noneAction)
-    {
-        if (this.HasValue())
-        {
-            someAction(this.value);
-        }
-        else
-        {
-            noneAction();
-        }
-    }
-
-    public Maybe<T> Where(Func<T, bool> predicate)
-    {
-        if (predicate == null)
-        {
-            throw new ArgumentNullException(nameof(predicate));
-        }
-
-        if (this.HasValue() && predicate(this.value))
-        {
-            return this;
-        }
-        else
-        {
-            return None<T>();
-        }
-    }
+    public abstract bool EqualsTo(T item);
 
     public Maybe<TResult> OfType<TResult>()
     {
-        if (this.HasValue())
-        {
-            return OfType<TResult>(this.value);
-        }
-
-        return None<TResult>();
-    }
-
-    public void Exec(Action<T> action)
-    {
-        if (this.HasValue())
-        {
-            action?.Invoke(this.value);
-        }
-    }
-
-    public bool EqualsTo(T item)
-    {
-        return this.HasValue() && Equals(this.value, item);
-    }
-
-    public override bool Equals(object obj)
-    {
-        if (obj is Maybe<T> other)
-        {
-            return object.Equals(this.value, other.value);
-        }
-
-        return false;
-    }
-
-    public override int GetHashCode()
-    {
-        return this.HasValue() ? this.value.GetHashCode() : 0;
-    }
-
-    public override string ToString()
-    {
-        return this.HasValue() ? this.value.ToString() : nameof(None);
+        return this.SelectMany(e => Maybe.OfType<TResult>(e));
     }
 }
 
-public class Maybe
+public abstract class Maybe
 {
     protected Maybe()
     {
@@ -238,12 +42,12 @@ public class Maybe
 
     public static Maybe<T> Some<T>(T item)
     {
-        return Maybe<T>.Some(item);
+        return new Some<T>(item);
     }
 
     public static Maybe<T> None<T>()
     {
-        return Maybe<T>.None;
+        return Category.Theory.Monads.None<T>.Instance;
     }
 
     /// <summary>
@@ -256,7 +60,7 @@ public class Maybe
     {
         if (item is null)
         {
-            return Maybe<T>.None;
+            return None<T>();
         }
 
         return Some(item);
