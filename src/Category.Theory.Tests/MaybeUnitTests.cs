@@ -29,7 +29,7 @@ public class MaybeUnitTests
     }
 
     [Fact]
-    public void Maybe_CanUseQueryExp()
+    public void Maybe_QueryExp_Some()
     {
         var name = Maybe.Some("name");
         var address = Maybe.Some("address");
@@ -48,6 +48,23 @@ public class MaybeUnitTests
         Assert.Equal(address, person.Select(e => e.a));
         Assert.Equal(addressNumber, person.Select(e => e.an));
         Assert.Equal(zipNumber, person.Select(e => e.z));
+    }
+
+    [Fact]
+    public void Maybe_QueryExp_None()
+    {
+        var name = Maybe.Some("name");
+        var address = Maybe.Some("address");
+        var addressNumber = Maybe.None<int>();
+        var zipNumber = Maybe.Some(98101);
+
+        var person =
+            from n in name
+            from a in address
+            from an in addressNumber
+            from z in zipNumber
+            select new { n, a, an, z };
+        Assert.False(person.HasValue());
     }
 
     [Fact]
