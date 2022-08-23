@@ -40,4 +40,9 @@ internal class Right<TLeft, TRight> : Either<TLeft, TRight>
     {
         return true;
     }
+
+    public override TRight GetRightOrFallback(TRight fallbackValue)
+    {
+        return this.value;
+    }
 }

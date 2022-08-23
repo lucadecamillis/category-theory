@@ -26,6 +26,11 @@ internal class Left<TLeft, TRight> : Either<TLeft, TRight>
 
     public override void IfRight(Action<TRight> action) { }
 
+    public override TRight GetRightOrFallback(TRight fallbackValue)
+    {
+        return fallbackValue;
+    }
+
     public override TResult Match<TResult>(Func<TLeft, TResult> left, Func<TRight, TResult> right)
     {
         return left(value);

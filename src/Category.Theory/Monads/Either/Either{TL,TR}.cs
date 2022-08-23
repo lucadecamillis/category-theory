@@ -10,6 +10,8 @@ public abstract class Either<TLeft, TRight>
 
     public abstract void IfRight(Action<TRight> action);
 
+    public abstract TRight GetRightOrFallback(TRight fallbackValue);
+
     public abstract Either<TLeft, T1Right> Select<T1Right>(Func<TRight, T1Right> selector);
 
     public abstract Either<TLeft, T1Right> SelectMany<T1Right>(Func<TRight, Either<TLeft, T1Right>> selector);

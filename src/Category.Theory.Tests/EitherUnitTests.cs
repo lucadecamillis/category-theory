@@ -27,4 +27,12 @@ public class EitherUnitTests
 
         var stringEntity = entity.Select(e => e.ToString());
     }
+
+    [Fact]
+    public void Either_CanMap()
+    {
+        Either<string, int> e = Either.Right<string, int>(3).Select(e => e + 5).Select(e => e / 2);
+        Assert.True(e.HasRight());
+        Assert.Equal(4, e.GetRightOrFallback(-1));
+    }
 }
