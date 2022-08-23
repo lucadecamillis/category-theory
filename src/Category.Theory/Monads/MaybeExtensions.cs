@@ -16,29 +16,27 @@ public static class MaybeExtensions
         return maybe.SelectMany(e => NullableToMaybe(selector(e)));
     }
 
-    public static Maybe<TResult> SelectMany<T, TResult, TCollection>(
-        this Maybe<T> maybe,
-        Func<T, Maybe<TCollection>> collectionSelector,
-        Func<T, TCollection, TResult> resultSelector)
+    public static Maybe<TResult> SelectMany<T1, T2, TResult>(
+        this Maybe<T1> t1,
+        Func<T1, Maybe<T2>> t2,
+        Func<T1, T2, TResult> tresult)
     {
-        if (maybe == null)
+        if (t1 == null)
         {
-            throw new ArgumentNullException(nameof(maybe));
+            throw new ArgumentNullException(nameof(t1));
         }
 
-        if (collectionSelector == null)
+        if (t2 == null)
         {
-            throw new ArgumentNullException(nameof(collectionSelector));
+            throw new ArgumentNullException(nameof(t2));
         }
 
-        if (resultSelector == null)
+        if (tresult == null)
         {
-            throw new ArgumentNullException(nameof(resultSelector));
+            throw new ArgumentNullException(nameof(tresult));
         }
 
-        return maybe
-            .SelectMany(collectionSelector)
-            .SelectMany(c => maybe.Select(t => resultSelector(t, c)));
+        return t1.SelectMany(x => t2(x).Select(y => tresult(x, y)));
     }
 
     /// <summary>
