@@ -1,12 +1,7 @@
 namespace Category.Theory.Monads;
 
-public abstract class Maybe
+public static class Maybe
 {
-    protected Maybe()
-    {
-        
-    }
-
     public static Maybe<T> Some<T>(T item)
     {
         return new Some<T>(item);
