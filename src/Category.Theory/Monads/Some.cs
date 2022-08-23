@@ -57,11 +57,21 @@ internal class Some<T> : Maybe<T>, IEquatable<Some<T>>
 
     public override TResult Match<TResult>(Func<T, TResult> someFunc, Func<TResult> noneFunc)
     {
+        if (someFunc == null)
+        {
+            throw new ArgumentNullException(nameof(someFunc));
+        }
+
         return someFunc(this.value);
     }
 
     public override void Iter(Action<T> someAction, Action noneAction)
     {
+        if (someAction == null)
+        {
+            throw new ArgumentNullException(nameof(someAction));
+        }
+
         someAction(this.value);
     }
 
@@ -74,7 +84,7 @@ internal class Some<T> : Maybe<T>, IEquatable<Some<T>>
 
         if (predicate(this.value))
         {
-            return this;
+            return new Some<T>(this.value);
         }
 
         return None<T>.Instance;
@@ -82,7 +92,12 @@ internal class Some<T> : Maybe<T>, IEquatable<Some<T>>
 
     public override void Exec(Action<T> action)
     {
-        action?.Invoke(this.value);
+        if (action == null)
+        {
+            throw new ArgumentNullException(nameof(action));
+        }
+
+        action.Invoke(this.value);
     }
 
     public override bool EqualsTo(T item)

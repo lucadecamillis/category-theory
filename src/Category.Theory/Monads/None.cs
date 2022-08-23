@@ -31,11 +31,21 @@ internal class None<T> : Maybe<T>, IEquatable<None<T>>
 
     public override TResult Match<TResult>(Func<T, TResult> someFunc, Func<TResult> noneFunc)
     {
+        if (noneFunc == null)
+        {
+            throw new ArgumentNullException(nameof(noneFunc));
+        }
+        
         return noneFunc();
     }
 
     public override void Iter(Action<T> someAction, Action noneAction)
     {
+        if (noneAction == null)
+        {
+            throw new ArgumentNullException(nameof(noneAction));
+        }
+
         noneAction();
     }
 
@@ -56,7 +66,7 @@ internal class None<T> : Maybe<T>, IEquatable<None<T>>
 
     public bool Equals(None<T> other)
     {
-        return true;
+        return other != null;
     }
 
     public override bool Equals(object obj)
