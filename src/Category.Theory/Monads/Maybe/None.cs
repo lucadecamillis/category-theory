@@ -16,6 +16,11 @@ internal class None<T> : Maybe<T>, IEquatable<None<T>>
 
     public override T GetValueOrFallback(T fallbackValue)
     {
+        if (fallbackValue == null)
+        {
+            throw new ArgumentNullException(nameof(fallbackValue));
+        }
+
         return fallbackValue;
     }
 

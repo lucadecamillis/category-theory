@@ -28,6 +28,11 @@ internal class Left<TLeft, TRight> : Either<TLeft, TRight>
 
     public override TRight GetRightOrFallback(TRight fallbackValue)
     {
+        if (fallbackValue == null)
+        {
+            throw new ArgumentNullException(nameof(fallbackValue));
+        }
+
         return fallbackValue;
     }
 

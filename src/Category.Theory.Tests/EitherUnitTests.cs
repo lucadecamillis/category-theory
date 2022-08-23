@@ -23,9 +23,9 @@ public class EitherUnitTests
     [Fact]
     public void Either_CanSelect()
     {
-        Either<Exception, int> entity = Either.Right<Exception, int>(2);
-
-        var stringEntity = entity.Select(e => e.ToString());
+        Either<Exception, string> e = Either.Right<Exception, int>(2).Select(e => e.ToString());
+        Assert.True(e.HasRight());
+        Assert.Equal("2", e.GetRightOrFallback(string.Empty));
     }
 
     [Fact]
