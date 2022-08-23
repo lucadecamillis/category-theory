@@ -1,6 +1,6 @@
 namespace Category.Theory.Monads;
 
-public class Left<TLeft, TRight> : Either<TLeft, TRight>
+internal class Left<TLeft, TRight> : Either<TLeft, TRight>
 {
     private readonly TLeft value;
 
