@@ -35,4 +35,16 @@ public class EitherUnitTests
         Assert.True(e.HasRight());
         Assert.Equal(4, e.GetRightOrFallback(-1));
     }
+
+    [Fact]
+    public void Either_CanMatch()
+    {
+        var toString = (Either<uint, byte> e) => e.Match(u => u.ToString(), e => e.ToString());
+
+        var b = Either.Right<uint, byte>(3);
+        Assert.Equal("3", toString(b));
+
+        var u = Either.Left<uint, byte>(4);
+        Assert.Equal("4", toString(u));
+    }
 }
