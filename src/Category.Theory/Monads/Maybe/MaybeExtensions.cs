@@ -4,6 +4,17 @@ namespace Category.Theory.Monads;
 
 public static class MaybeExtensions
 {
+    /// <summary>
+    /// Monadic join
+    /// </summary>
+    /// <typeparam name="TResult"></typeparam>
+    /// <param name="maybe"></param>
+    /// <returns></returns>
+    public static Maybe<TResult> Join<TResult>(this Maybe<Maybe<TResult>> maybe)
+    {
+        return maybe.SelectMany(e => e);
+    }
+
     public static Maybe<TResult> Select<T, TResult>(
         this Maybe<T> maybe,
         Func<T, TResult?> selector) where TResult : struct
@@ -16,6 +27,17 @@ public static class MaybeExtensions
         return maybe.SelectMany(e => NullableToMaybe(selector(e)));
     }
 
+    /// <summary>
+    /// Enables query syntaxt for maybe
+    /// </summary>
+    /// <typeparam name="T1"></typeparam>
+    /// <typeparam name="T2"></typeparam>
+    /// <typeparam name="TResult"></typeparam>
+    /// <param name="t1"></param>
+    /// <param name="t2"></param>
+    /// <param name="tresult"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentNullException"></exception>
     public static Maybe<TResult> SelectMany<T1, T2, TResult>(
         this Maybe<T1> t1,
         Func<T1, Maybe<T2>> t2,
@@ -53,22 +75,6 @@ public static class MaybeExtensions
         }
 
         return null;
-    }
-
-    /// <summary>
-    /// Convert the given nullable into maybe (for value types)
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="nullable"></param>
-    /// <returns></returns>
-    public static Maybe<T> FromNullable<T>(this T? nullable) where T : struct
-    {
-        if (nullable.HasValue)
-        {
-            return Maybe.Some(nullable.Value);
-        }
-
-        return Maybe.None<T>();
     }
 
     /// <summary>
