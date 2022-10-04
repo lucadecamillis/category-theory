@@ -51,4 +51,38 @@ public class NullableUnitTests
             select new { n, i, an, z };
         Assert.False(person.HasValue());
     }
+
+    [Fact]
+    public void Mixed_QueryExp_Some()
+    {
+        var name = new System.Nullable<char>('n');
+        var id = Maybe.Some(Guid.NewGuid());
+        var addressNumber = new System.Nullable<int>(134);
+        var zipNumber = new System.Nullable<int>(98101);
+
+        var person =
+            from n in name
+            from i in id
+            from an in addressNumber
+            from z in zipNumber
+            select new { n, i, an, z };
+        Assert.True(person.HasValue());
+    }
+
+        [Fact]
+    public void Mixed_QueryExp_None()
+    {
+        var name = new System.Nullable<char>('n');
+        var id = Maybe.None<Guid>();
+        var addressNumber = new System.Nullable<int>(134);
+        var zipNumber = new System.Nullable<int>(98101);
+
+        var person =
+            from n in name
+            from i in id
+            from an in addressNumber
+            from z in zipNumber
+            select new { n, i, an, z };
+        Assert.False(person.HasValue());
+    }
 }

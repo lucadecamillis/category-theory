@@ -136,6 +136,41 @@ public static class NullableExtensions
         return n1.SelectMany(x => n2(x).Select(y => tresult(x, y)));
     }
 
+        /// <summary>
+    /// Enables query syntaxt for nullable
+    /// </summary>
+    /// <typeparam name="T1"></typeparam>
+    /// <typeparam name="T2"></typeparam>
+    /// <typeparam name="TResult"></typeparam>
+    /// <param name="n1"></param>
+    /// <param name="n2"></param>
+    /// <param name="tresult"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentNullException"></exception>
+    public static Maybe<TResult> SelectMany<T1, T2, TResult>(
+        this Nullable<T1> n1,
+        Func<T1, Maybe<T2>> n2,
+        Func<T1, T2, TResult> tresult)
+        where T1 : struct
+    {
+        if (n1 == null)
+        {
+            throw new ArgumentNullException(nameof(n1));
+        }
+
+        if (n2 == null)
+        {
+            throw new ArgumentNullException(nameof(n2));
+        }
+
+        if (tresult == null)
+        {
+            throw new ArgumentNullException(nameof(tresult));
+        }
+
+        return n1.SelectMany(x => n2(x).Select(y => tresult(x, y)));
+    }
+
     /// <summary>
     /// Convert the given nullable into maybe (for value types)
     /// </summary>
