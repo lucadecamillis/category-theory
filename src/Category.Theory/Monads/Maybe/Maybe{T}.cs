@@ -23,7 +23,7 @@ public abstract class Maybe<T>
 
     public abstract Maybe<T> Where(Func<T, bool> predicate);
 
-    public abstract void Exec(Action<T> action);
+    public abstract Maybe<T> IfSome(Action<T> action);
 
     public abstract bool EqualsTo(T item);
 

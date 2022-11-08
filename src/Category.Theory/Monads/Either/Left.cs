@@ -19,12 +19,22 @@ internal class Left<TLeft, TRight> : Either<TLeft, TRight>
         return false;
     }
 
-    public override void IfLeft(Action<TLeft> action)
+    public override Either<TLeft, TRight> IfLeft(Action<TLeft> action)
     {
-        action(value);
+        if (action == null)
+        {
+            throw new ArgumentNullException(nameof(action));
+        }
+
+        action(this.value);
+
+        return this;
     }
 
-    public override void IfRight(Action<TRight> action) { }
+    public override Either<TLeft, TRight> IfRight(Action<TRight> action)
+    {
+        return this;
+    }
 
     public override TRight GetRightOrFallback(TRight fallbackValue)
     {
@@ -38,16 +48,16 @@ internal class Left<TLeft, TRight> : Either<TLeft, TRight>
 
     public override TResult Match<TResult>(Func<TLeft, TResult> left, Func<TRight, TResult> right)
     {
-        return left(value);
+        return left(this.value);
     }
 
     public override Either<TLeft, T1Right> Select<T1Right>(Func<TRight, T1Right> selector)
     {
-        return new Left<TLeft, T1Right>(value);
+        return new Left<TLeft, T1Right>(this.value);
     }
 
     public override Either<TLeft, T1Right> SelectMany<T1Right>(Func<TRight, Either<TLeft, T1Right>> selector)
     {
-        return new Left<TLeft, T1Right>(value);
+        return new Left<TLeft, T1Right>(this.value);
     }
 }

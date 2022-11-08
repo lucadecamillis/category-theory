@@ -277,7 +277,28 @@ public static class MaybeExtensions
         {
             return new Some<T>(nullableValue.Value);
         }
-
         return None<T>.Instance;
+    }
+
+    /// <summary>
+    /// Natural transformation from <see cref="Maybe"/> into <see cref="Either"/>
+    /// </summary>
+    /// <typeparam name="TLeft"></typeparam>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="maybe"></param>
+    /// <param name="left"></param>
+    /// <returns></returns>
+    public static Either<TLeft, T> ToEither<TLeft, T>(this Maybe<T> maybe, TLeft left)
+    {
+        return maybe.Match(
+            someFunc: e => Either.Right<TLeft, T>(e),
+            noneFunc: () => Either.Left<TLeft, T>(left));
+    }
+
+    public static Either<TLeft, Maybe<T>> ToOptionalEither<TLeft, T>(this Maybe<T> maybe, TLeft left)
+    {
+        return maybe.Match(
+            someFunc: e => Either.Right<TLeft, Maybe<T>>(Maybe.Some(e)),
+            noneFunc: () => Either.Left<TLeft, Maybe<T>>(left));
     }
 }

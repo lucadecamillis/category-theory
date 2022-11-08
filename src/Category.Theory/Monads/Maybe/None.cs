@@ -40,7 +40,7 @@ internal class None<T> : Maybe<T>, IEquatable<None<T>>
         {
             throw new ArgumentNullException(nameof(noneFunc));
         }
-        
+
         return noneFunc();
     }
 
@@ -56,12 +56,13 @@ internal class None<T> : Maybe<T>, IEquatable<None<T>>
 
     public override Maybe<T> Where(Func<T, bool> predicate)
     {
-        return None<T>.Instance;
+        return Instance;
     }
 
-    public override void Exec(Action<T> action)
+    public override Maybe<T> IfSome(Action<T> action)
     {
         // Nothing to do
+        return this;
     }
 
     public override bool EqualsTo(T item)

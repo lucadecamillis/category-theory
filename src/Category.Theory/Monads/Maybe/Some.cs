@@ -90,7 +90,7 @@ internal class Some<T> : Maybe<T>, IEquatable<Some<T>>
         return None<T>.Instance;
     }
 
-    public override void Exec(Action<T> action)
+    public override Maybe<T> IfSome(Action<T> action)
     {
         if (action == null)
         {
@@ -98,6 +98,8 @@ internal class Some<T> : Maybe<T>, IEquatable<Some<T>>
         }
 
         action.Invoke(this.value);
+
+        return this;
     }
 
     public override bool EqualsTo(T item)

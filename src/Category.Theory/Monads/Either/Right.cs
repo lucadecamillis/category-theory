@@ -9,26 +9,36 @@ internal class Right<TLeft, TRight> : Either<TLeft, TRight>
         this.value = value;
     }
 
-    public override void IfLeft(Action<TLeft> action) { }
-
-    public override void IfRight(Action<TRight> action)
+    public override Either<TLeft, TRight> IfLeft(Action<TLeft> action)
     {
-        action(value);
+        return this;
+    }
+
+    public override Either<TLeft, TRight> IfRight(Action<TRight> action)
+    {
+        if (action == null)
+        {
+            throw new ArgumentNullException(nameof(action));
+        }
+
+        action(this.value);
+
+        return this;
     }
 
     public override Either<TLeft, T1Right> Select<T1Right>(Func<TRight, T1Right> selector)
     {
-        return new Right<TLeft, T1Right>(selector(value));
+        return new Right<TLeft, T1Right>(selector(this.value));
     }
 
     public override Either<TLeft, T1Right> SelectMany<T1Right>(Func<TRight, Either<TLeft, T1Right>> selector)
     {
-        return selector(value);
+        return selector(this.value);
     }
 
     public override TResult Match<TResult>(Func<TLeft, TResult> left, Func<TRight, TResult> right)
     {
-        return right(value);
+        return right(this.value);
     }
 
     public override bool HasLeft()

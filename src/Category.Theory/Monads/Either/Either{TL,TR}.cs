@@ -6,9 +6,9 @@ public abstract class Either<TLeft, TRight>
 
     public abstract bool HasRight();
 
-    public abstract void IfLeft(Action<TLeft> action);
+    public abstract Either<TLeft, TRight> IfLeft(Action<TLeft> action);
 
-    public abstract void IfRight(Action<TRight> action);
+    public abstract Either<TLeft, TRight> IfRight(Action<TRight> action);
 
     public abstract TRight GetRightOrFallback(TRight fallbackValue);
 
