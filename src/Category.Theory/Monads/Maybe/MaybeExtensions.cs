@@ -15,7 +15,7 @@ public static class MaybeExtensions
         return maybe.SelectMany(e => e);
     }
 
-    public static Maybe<TResult> Select<T, TResult>(
+    public static Maybe<TResult> SelectMany<T, TResult>(
         this Maybe<T> maybe,
         Func<T, TResult?> selector) where TResult : struct
     {

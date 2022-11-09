@@ -19,6 +19,11 @@ internal class Some<T> : Maybe<T>, IEquatable<Some<T>>
         return true;
     }
 
+    public override T GetValueOrThrow(Exception ex)
+    {
+        return this.value;
+    }
+
     public override T GetValueOrThrow(string errorMessage = null)
     {
         return this.value;

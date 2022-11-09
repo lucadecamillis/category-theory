@@ -9,6 +9,11 @@ internal class None<T> : Maybe<T>, IEquatable<None<T>>
         return false;
     }
 
+    public override T GetValueOrThrow(Exception ex)
+    {
+        throw ex;
+    }
+
     public override T GetValueOrThrow(string errorMessage = null)
     {
         throw new InvalidOperationException(errorMessage ?? $"No value set on maybe");

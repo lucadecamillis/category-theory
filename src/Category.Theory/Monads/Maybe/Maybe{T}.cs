@@ -9,6 +9,8 @@ public abstract class Maybe<T>
 
     public abstract bool HasValue();
 
+    public abstract T GetValueOrThrow(Exception ex);
+
     public abstract T GetValueOrThrow(string errorMessage = null);
 
     public abstract T GetValueOrFallback(T fallbackValue);
