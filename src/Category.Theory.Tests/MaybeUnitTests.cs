@@ -15,7 +15,7 @@ public class MaybeUnitTests
     [Fact]
     public void Maybe_CanCreateSome()
     {
-        Maybe<int> m = Maybe.Some(4);
+        Maybe<int> m = 4;
         Assert.True(m.HasValue());
         Assert.Equal(4, m.GetValueOrFallback(-1));
     }
@@ -31,10 +31,10 @@ public class MaybeUnitTests
     [Fact]
     public void Maybe_QueryExp_Some()
     {
-        var name = Maybe.Some("name");
-        var address = Maybe.Some("address");
-        var addressNumber = Maybe.Some(134);
-        var zipNumber = Maybe.Some(98101);
+        Maybe<string> name = "name";
+        Maybe<string> address = "address";
+        Maybe<int> addressNumber = 134;
+        Maybe<int> zipNumber = 98101;
 
         var person =
             from n in name
@@ -53,10 +53,10 @@ public class MaybeUnitTests
     [Fact]
     public void Maybe_QueryExp_None()
     {
-        var name = Maybe.Some("name");
-        var address = Maybe.Some("address");
-        var addressNumber = Maybe.None<int>();
-        var zipNumber = Maybe.Some(98101);
+        Maybe<string> name = "name";
+        Maybe<string> address = "address";
+        Maybe<int> addressNumber = Maybe.None<int>();
+        Maybe<int> zipNumber = 98101;
 
         var person =
             from n in name

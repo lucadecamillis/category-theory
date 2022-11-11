@@ -17,7 +17,7 @@ public class EitherUnitTests
     public void Either_CanCreateLeft()
     {
         Either<string, int> e = "value";
-        
+
         Assert.True(e.HasLeft());
         Assert.False(e.HasRight());
     }
@@ -44,10 +44,30 @@ public class EitherUnitTests
     {
         var toString = (Either<uint, byte> e) => e.Match(u => u.ToString(), e => e.ToString());
 
-        Either<uint, byte> b = 3;
+        Either<uint, byte> b = (uint)3;
         Assert.Equal("3", toString(b));
 
         Either<uint, byte> u = 4;
         Assert.Equal("4", toString(u));
+    }
+
+    [Fact]
+    public void Either_ImplicitOperator()
+    {
+        var parseSuccess = TryParseNumber("5");
+        Assert.True(parseSuccess.HasRight());
+
+        var parseFailure = TryParseNumber("5.6");
+        Assert.True(parseFailure.HasLeft());
+    }
+
+    private Either<string, int> TryParseNumber(string candidate)
+    {
+        if (int.TryParse(candidate, out int result))
+        {
+            return result;
+        }
+
+        return $"Cannot parse string {candidate}";
     }
 }

@@ -33,4 +33,6 @@ public abstract class Maybe<T>
     {
         return this.SelectMany(e => Maybe.OfType<TResult>(e));
     }
+
+    public static implicit operator Maybe<T>(T value) => new Some<T>(value);
 }
