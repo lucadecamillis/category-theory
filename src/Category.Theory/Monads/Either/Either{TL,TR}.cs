@@ -17,4 +17,8 @@ public abstract class Either<TLeft, TRight>
     public abstract Either<TLeft, T1Right> SelectMany<T1Right>(Func<TRight, Either<TLeft, T1Right>> selector);
 
     public abstract TResult Match<TResult>(Func<TLeft, TResult> Left, Func<TRight, TResult> Right);
+
+    public static implicit operator Either<TLeft, TRight>(TLeft left) => new Left<TLeft, TRight>(left);
+
+    public static implicit operator Either<TLeft, TRight>(TRight right) => new Right<TLeft, TRight>(right);
 }

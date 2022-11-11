@@ -7,7 +7,8 @@ public class EitherUnitTests
     [Fact]
     public void Either_CanCreateRight()
     {
-        Either<string, int> e = Either.Right<string, int>(3);
+        Either<string, int> e = 3;
+
         Assert.True(e.HasRight());
         Assert.False(e.HasLeft());
     }
@@ -15,7 +16,8 @@ public class EitherUnitTests
     [Fact]
     public void Either_CanCreateLeft()
     {
-        Either<string, int> e = Either.Left<string, int>("value");
+        Either<string, int> e = "value";
+        
         Assert.True(e.HasLeft());
         Assert.False(e.HasRight());
     }
@@ -23,7 +25,8 @@ public class EitherUnitTests
     [Fact]
     public void Either_CanSelect()
     {
-        Either<Exception, string> e = Either.Right<Exception, int>(2).Select(e => e.ToString());
+        var e = ((Either<Exception, int>)2).Select(e => e.ToString());
+
         Assert.True(e.HasRight());
         Assert.Equal("2", e.GetRightOrFallback(string.Empty));
     }
@@ -31,7 +34,7 @@ public class EitherUnitTests
     [Fact]
     public void Either_CanMap()
     {
-        Either<string, int> e = Either.Right<string, int>(3).Select(e => e + 5).Select(e => e / 2);
+        var e = ((Either<string, int>)(3)).Select(e => e + 5).Select(e => e / 2);
         Assert.True(e.HasRight());
         Assert.Equal(4, e.GetRightOrFallback(-1));
     }
@@ -41,10 +44,10 @@ public class EitherUnitTests
     {
         var toString = (Either<uint, byte> e) => e.Match(u => u.ToString(), e => e.ToString());
 
-        var b = Either.Right<uint, byte>(3);
+        Either<uint, byte> b = 3;
         Assert.Equal("3", toString(b));
 
-        var u = Either.Left<uint, byte>(4);
+        Either<uint, byte> u = 4;
         Assert.Equal("4", toString(u));
     }
 }

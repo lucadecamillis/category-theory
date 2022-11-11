@@ -136,8 +136,8 @@ public static class NullableExtensions
         return n1.SelectMany(x => n2(x).Select(y => tresult(x, y)));
     }
 
-        /// <summary>
-    /// Enables query syntaxt for nullable
+    /// <summary>
+    /// Enables query syntax for nullable
     /// </summary>
     /// <typeparam name="T1"></typeparam>
     /// <typeparam name="T2"></typeparam>
