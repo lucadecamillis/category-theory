@@ -4,7 +4,7 @@ public abstract class Maybe<T>
 {
     protected Maybe()
     {
-
+        
     }
 
     public abstract bool HasValue();
