@@ -35,4 +35,6 @@ public abstract class Maybe<T>
     }
 
     public static implicit operator Maybe<T>(T value) => new Some<T>(value);
+
+    public static implicit operator Maybe<T>(Types.None _) => new None<T>();
 }

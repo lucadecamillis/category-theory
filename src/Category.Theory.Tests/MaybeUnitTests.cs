@@ -1,5 +1,6 @@
 using Category.Theory.Linq;
 using Category.Theory.Monads;
+using Category.Theory.Types;
 
 namespace Category.Theory.Tests;
 
@@ -8,7 +9,7 @@ public class MaybeUnitTests
     [Fact]
     public void Maybe_CanCreateEmpty()
     {
-        Maybe<int> m = Maybe.None<int>();
+        Maybe<int> m = None.Instance;
         Assert.False(m.HasValue());
     }
 
@@ -55,7 +56,7 @@ public class MaybeUnitTests
     {
         Maybe<string> name = "name";
         Maybe<string> address = "address";
-        Maybe<int> addressNumber = Maybe.None<int>();
+        Maybe<int> addressNumber = None.Instance;
         Maybe<int> zipNumber = 98101;
 
         var person =
