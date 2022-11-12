@@ -4,9 +4,14 @@ internal class Left<TLeft, TRight> : Either<TLeft, TRight>
 {
     private readonly TLeft value;
 
-    public Left(TLeft left)
+    public Left(TLeft value)
     {
-        this.value = left;
+        if (value == null)
+        {
+            throw new ArgumentNullException(nameof(value));
+        }
+
+        this.value = value;
     }
 
     public override bool HasLeft()
@@ -34,16 +39,6 @@ internal class Left<TLeft, TRight> : Either<TLeft, TRight>
     public override Either<TLeft, TRight> IfRight(Action<TRight> action)
     {
         return this;
-    }
-
-    public override TRight GetRightOrFallback(TRight fallbackValue)
-    {
-        if (fallbackValue == null)
-        {
-            throw new ArgumentNullException(nameof(fallbackValue));
-        }
-
-        return fallbackValue;
     }
 
     public override bool TryGetLeft(out TLeft value)

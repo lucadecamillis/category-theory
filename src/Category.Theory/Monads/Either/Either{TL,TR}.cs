@@ -10,8 +10,6 @@ public abstract class Either<TLeft, TRight>
 
     public abstract Either<TLeft, TRight> IfRight(Action<TRight> action);
 
-    public abstract TRight GetRightOrFallback(TRight fallbackValue);
-
     public abstract bool TryGetLeft(out TLeft value);
 
     public abstract bool TryGetRight(out TRight value);

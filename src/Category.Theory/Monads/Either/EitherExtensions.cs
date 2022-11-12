@@ -2,6 +2,18 @@ namespace Category.Theory.Monads;
 
 public static class EitherExtensions
 {
+    public static TRight GetRightOrFallback<TLeft, TRight>(
+        this Either<TLeft, TRight> either,
+        TRight fallbackValue)
+    {
+        if (either.TryGetRight(out TRight value))
+        {
+            return value;
+        }
+
+        return fallbackValue;
+    }
+
     /// <summary>
     /// Convert the given either to maybe (right value)
     /// </summary>
@@ -13,6 +25,6 @@ public static class EitherExtensions
     {
         return either.Match(
             Left: l => Maybe.None<T>(),
-            Right: r => Maybe.Some(r));
+            Right: r => r);
     }
 }

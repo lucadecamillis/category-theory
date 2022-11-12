@@ -6,6 +6,11 @@ internal class Right<TLeft, TRight> : Either<TLeft, TRight>
 
     public Right(TRight value)
     {
+        if (value == null)
+        {
+            throw new ArgumentNullException(nameof(value));
+        }
+
         this.value = value;
     }
 
@@ -49,11 +54,6 @@ internal class Right<TLeft, TRight> : Either<TLeft, TRight>
     public override bool HasRight()
     {
         return true;
-    }
-
-    public override TRight GetRightOrFallback(TRight fallbackValue)
-    {
-        return this.value;
     }
 
     public override bool TryGetLeft(out TLeft value)
