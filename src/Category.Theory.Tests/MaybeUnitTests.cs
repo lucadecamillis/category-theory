@@ -32,6 +32,19 @@ public class MaybeUnitTests
     }
 
     [Fact]
+    public void Maybe_CanQuery()
+    {
+        Maybe<int> m = 4;
+
+        var result =
+            from value in m
+            where value == 2
+            select value;
+
+        Assert.False(result.HasValue());
+    }
+
+    [Fact]
     public void Maybe_QueryExp_Some()
     {
         Maybe<string> name = "name";

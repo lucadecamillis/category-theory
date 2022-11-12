@@ -4,6 +4,13 @@ namespace Category.Theory.Monads;
 
 public static class MaybeExtensions
 {
+    /// <summary>
+    /// Get the value from the given maybe of throw the given exception
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="maybe"></param>
+    /// <param name="ex"></param>
+    /// <returns></returns>
     public static T GetValueOrThrow<T>(this Maybe<T> maybe, Exception ex)
     {
         if (maybe.TryGetValue(out T value))
@@ -14,6 +21,14 @@ public static class MaybeExtensions
         throw ex;
     }
 
+    /// <summary>
+    /// Get the value from the given maybe or a generic exception is thrown
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="maybe"></param>
+    /// <param name="errorMessage"></param>
+    /// <returns></returns>
+    /// <exception cref="InvalidOperationException"></exception>
     public static T GetValueOrThrow<T>(this Maybe<T> maybe, string errorMessage = null)
     {
         if (maybe.TryGetValue(out T value))
@@ -24,6 +39,14 @@ public static class MaybeExtensions
         throw new InvalidOperationException(errorMessage ?? $"No value set on maybe");
     }
 
+    /// <summary>
+    /// Get the value from the given maybe or the provided fallback
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="maybe"></param>
+    /// <param name="fallbackValue"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentNullException"></exception>
     public static T GetValueOrFallback<T>(this Maybe<T> maybe, T fallbackValue)
     {
         if (fallbackValue == null)
@@ -39,6 +62,15 @@ public static class MaybeExtensions
         return fallbackValue;
     }
 
+    /// <summary>
+    /// Functor mapping
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="TResult"></typeparam>
+    /// <param name="maybe"></param>
+    /// <param name="selector"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentNullException"></exception>
     public static Maybe<TResult> Select<T, TResult>(
         this Maybe<T> maybe,
         Func<T, TResult> selector)
@@ -60,6 +92,15 @@ public static class MaybeExtensions
         return None<TResult>.Instance;
     }
 
+    /// <summary>
+    /// Monadic join
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="TResult"></typeparam>
+    /// <param name="maybe"></param>
+    /// <param name="selector"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentNullException"></exception>
     public static Maybe<TResult> SelectMany<T, TResult>(
         this Maybe<T> maybe,
         Func<T, Maybe<TResult>> selector)
@@ -77,6 +118,15 @@ public static class MaybeExtensions
         return None<TResult>.Instance;
     }
 
+    /// <summary>
+    /// Monadic join (where inner monad is Nullable)
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="TResult"></typeparam>
+    /// <param name="maybe"></param>
+    /// <param name="selector"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentNullException"></exception>
     public static Maybe<TResult> SelectMany<T, TResult>(
         this Maybe<T> maybe,
         Func<T, TResult?> selector) where TResult : struct
@@ -124,12 +174,12 @@ public static class MaybeExtensions
     }
 
     /// <summary>
-    /// Monadic join
+    /// Monadic flatmap
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="maybe"></param>
     /// <returns></returns>
-    public static Maybe<T> Join<T>(this Maybe<Maybe<T>> maybe)
+    public static Maybe<T> FlatMap<T>(this Maybe<Maybe<T>> maybe)
     {
         if (maybe.TryGetValue(out Maybe<T> inner))
         {
@@ -139,6 +189,16 @@ public static class MaybeExtensions
         return None<T>.Instance;
     }
 
+    /// <summary>
+    /// Monadic match
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="TResult"></typeparam>
+    /// <param name="maybe"></param>
+    /// <param name="someFunc"></param>
+    /// <param name="noneFunc"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentNullException"></exception>
     public static TResult Match<T, TResult>(
         this Maybe<T> maybe,
         Func<T, TResult> someFunc,
@@ -159,6 +219,14 @@ public static class MaybeExtensions
         }
     }
 
+    /// <summary>
+    /// Execute the appropriate action based on the maybe content
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="maybe"></param>
+    /// <param name="someAction"></param>
+    /// <param name="noneAction"></param>
+    /// <exception cref="ArgumentNullException"></exception>
     public static void Iter<T>(
         this Maybe<T> maybe,
         Action<T> someAction,
@@ -179,6 +247,14 @@ public static class MaybeExtensions
         }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="maybe"></param>
+    /// <param name="predicate"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentNullException"></exception>
     public static Maybe<T> Where<T>(this Maybe<T> maybe, Func<T, bool> predicate)
     {
         if (predicate == null)

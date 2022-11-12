@@ -1,6 +1,7 @@
 namespace Category.Theory.SumTypes;
 
 /// <summary>
+/// Sum type of 3 elements
 /// Inspired by <see href="https://github.com/mcintyre321/OneOf/blob/master/OneOf/OneOfT2.generated.cs"/>
 /// </summary>
 /// <typeparam name="T0"></typeparam>
