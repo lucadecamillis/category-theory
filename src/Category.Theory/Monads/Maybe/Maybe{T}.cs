@@ -9,32 +9,9 @@ public abstract class Maybe<T>
 
     public abstract bool HasValue();
 
-    public abstract T GetValueOrThrow(Exception ex);
-
-    public abstract T GetValueOrThrow(string errorMessage = null);
-
     public abstract bool TryGetValue(out T value);
 
-    public abstract T GetValueOrFallback(T fallbackValue);
-
-    public abstract Maybe<TResult> Select<TResult>(Func<T, TResult> selector);
-
-    public abstract Maybe<TResult> SelectMany<TResult>(Func<T, Maybe<TResult>> selector);
-
-    public abstract TResult Match<TResult>(Func<T, TResult> someFunc, Func<TResult> noneFunc);
-
-    public abstract void Iter(Action<T> someAction, Action noneAction);
-
-    public abstract Maybe<T> Where(Func<T, bool> predicate);
-
-    public abstract Maybe<T> IfSome(Action<T> action);
-
     public abstract bool EqualsTo(T item);
-
-    public Maybe<TResult> OfType<TResult>()
-    {
-        return this.SelectMany(e => Maybe.OfType<TResult>(e));
-    }
 
     public static implicit operator Maybe<T>(T value) => new Some<T>(value);
 

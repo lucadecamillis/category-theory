@@ -9,73 +9,12 @@ internal class None<T> : Maybe<T>, IEquatable<None<T>>
         return false;
     }
 
-    public override T GetValueOrThrow(Exception ex)
-    {
-        throw ex;
-    }
-
-    public override T GetValueOrThrow(string errorMessage = null)
-    {
-        throw new InvalidOperationException(errorMessage ?? $"No value set on maybe");
-    }
-
     public override bool TryGetValue(out T value)
     {
         value = default(T);
         return false;
     }
-
-    public override T GetValueOrFallback(T fallbackValue)
-    {
-        if (fallbackValue == null)
-        {
-            throw new ArgumentNullException(nameof(fallbackValue));
-        }
-
-        return fallbackValue;
-    }
-
-    public override Maybe<TResult> Select<TResult>(Func<T, TResult> selector)
-    {
-        return None<TResult>.Instance;
-    }
-
-    public override Maybe<TResult> SelectMany<TResult>(Func<T, Maybe<TResult>> selector)
-    {
-        return None<TResult>.Instance;
-    }
-
-    public override TResult Match<TResult>(Func<T, TResult> someFunc, Func<TResult> noneFunc)
-    {
-        if (noneFunc == null)
-        {
-            throw new ArgumentNullException(nameof(noneFunc));
-        }
-
-        return noneFunc();
-    }
-
-    public override void Iter(Action<T> someAction, Action noneAction)
-    {
-        if (noneAction == null)
-        {
-            throw new ArgumentNullException(nameof(noneAction));
-        }
-
-        noneAction();
-    }
-
-    public override Maybe<T> Where(Func<T, bool> predicate)
-    {
-        return Instance;
-    }
-
-    public override Maybe<T> IfSome(Action<T> action)
-    {
-        // Nothing to do
-        return this;
-    }
-
+    
     public override bool EqualsTo(T item)
     {
         return false;

@@ -4,15 +4,77 @@ namespace Category.Theory.Monads;
 
 public static class MaybeExtensions
 {
-    /// <summary>
-    /// Monadic join
-    /// </summary>
-    /// <typeparam name="TResult"></typeparam>
-    /// <param name="maybe"></param>
-    /// <returns></returns>
-    public static Maybe<TResult> Join<TResult>(this Maybe<Maybe<TResult>> maybe)
+    public static T GetValueOrThrow<T>(this Maybe<T> maybe, Exception ex)
     {
-        return maybe.SelectMany(e => e);
+        if (maybe.TryGetValue(out T value))
+        {
+            return value;
+        }
+
+        throw ex;
+    }
+
+    public static T GetValueOrThrow<T>(this Maybe<T> maybe, string errorMessage = null)
+    {
+        if (maybe.TryGetValue(out T value))
+        {
+            return value;
+        }
+
+        throw new InvalidOperationException(errorMessage ?? $"No value set on maybe");
+    }
+
+    public static T GetValueOrFallback<T>(this Maybe<T> maybe, T fallbackValue)
+    {
+        if (fallbackValue == null)
+        {
+            throw new ArgumentNullException(nameof(fallbackValue));
+        }
+
+        if (maybe.TryGetValue(out T value))
+        {
+            return value;
+        }
+
+        return fallbackValue;
+    }
+
+    public static Maybe<TResult> Select<T, TResult>(
+        this Maybe<T> maybe,
+        Func<T, TResult> selector)
+    {
+        if (selector == null)
+        {
+            throw new ArgumentNullException(nameof(selector));
+        }
+
+        if (maybe.TryGetValue(out T value))
+        {
+            TResult result = selector(value);
+            if (result != null)
+            {
+                return result;
+            }
+        }
+
+        return None<TResult>.Instance;
+    }
+
+    public static Maybe<TResult> SelectMany<T, TResult>(
+        this Maybe<T> maybe,
+        Func<T, Maybe<TResult>> selector)
+    {
+        if (selector == null)
+        {
+            throw new ArgumentNullException(nameof(selector));
+        }
+
+        if (maybe.TryGetValue(out T value))
+        {
+            return selector(value);
+        }
+
+        return None<TResult>.Instance;
     }
 
     public static Maybe<TResult> SelectMany<T, TResult>(
@@ -59,6 +121,92 @@ public static class MaybeExtensions
         }
 
         return t1.SelectMany(x => t2(x).Select(y => tresult(x, y)));
+    }
+
+    /// <summary>
+    /// Monadic join
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="maybe"></param>
+    /// <returns></returns>
+    public static Maybe<T> Join<T>(this Maybe<Maybe<T>> maybe)
+    {
+        if (maybe.TryGetValue(out Maybe<T> inner))
+        {
+            return inner;
+        }
+
+        return None<T>.Instance;
+    }
+
+    public static TResult Match<T, TResult>(
+        this Maybe<T> maybe,
+        Func<T, TResult> someFunc,
+        Func<TResult> noneFunc)
+    {
+        if (someFunc == null)
+        {
+            throw new ArgumentNullException(nameof(someFunc));
+        }
+
+        if (maybe.TryGetValue(out T value))
+        {
+            return someFunc(value);
+        }
+        else
+        {
+            return noneFunc();
+        }
+    }
+
+    public static void Iter<T>(
+        this Maybe<T> maybe,
+        Action<T> someAction,
+        Action noneAction)
+    {
+        if (someAction == null)
+        {
+            throw new ArgumentNullException(nameof(someAction));
+        }
+
+        if (maybe.TryGetValue(out T value))
+        {
+            someAction(value);
+        }
+        else
+        {
+            noneAction();
+        }
+    }
+
+    public static Maybe<T> Where<T>(this Maybe<T> maybe, Func<T, bool> predicate)
+    {
+        if (predicate == null)
+        {
+            throw new ArgumentNullException(nameof(predicate));
+        }
+
+        if (maybe.TryGetValue(out T value) && predicate(value))
+        {
+            return value;
+        }
+
+        return None<T>.Instance;
+    }
+
+    public static Maybe<T> IfSome<T>(this Maybe<T> maybe, Action<T> action)
+    {
+        if (action == null)
+        {
+            throw new ArgumentNullException(nameof(action));
+        }
+
+        if (maybe.TryGetValue(out T value))
+        {
+            action.Invoke(value);
+        }
+
+        return maybe;
     }
 
     /// <summary>
