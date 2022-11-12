@@ -11,6 +11,7 @@ public class MaybeUnitTests
     {
         Maybe<int> m = None.Instance;
         Assert.False(m.HasValue());
+        Assert.False(m.TryGetValue(out _));
     }
 
     [Fact]
@@ -18,6 +19,7 @@ public class MaybeUnitTests
     {
         Maybe<int> m = 4;
         Assert.True(m.HasValue());
+        Assert.True(m.TryGetValue(out var value) && value == 4);
         Assert.Equal(4, m.GetValueOrFallback(-1));
     }
 

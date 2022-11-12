@@ -19,6 +19,12 @@ internal class None<T> : Maybe<T>, IEquatable<None<T>>
         throw new InvalidOperationException(errorMessage ?? $"No value set on maybe");
     }
 
+    public override bool TryGetValue(out T value)
+    {
+        value = default(T);
+        return false;
+    }
+
     public override T GetValueOrFallback(T fallbackValue)
     {
         if (fallbackValue == null)

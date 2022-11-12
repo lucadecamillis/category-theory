@@ -34,6 +34,12 @@ internal class Some<T> : Maybe<T>, IEquatable<Some<T>>
         return this.value;
     }
 
+    public override bool TryGetValue(out T value)
+    {
+        value = this.value;
+        return true;
+    }
+
     public override Maybe<TResult> Select<TResult>(Func<T, TResult> selector)
     {
         if (selector == null)

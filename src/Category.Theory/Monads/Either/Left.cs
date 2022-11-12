@@ -46,6 +46,18 @@ internal class Left<TLeft, TRight> : Either<TLeft, TRight>
         return fallbackValue;
     }
 
+    public override bool TryGetLeft(out TLeft value)
+    {
+        value = this.value;
+        return true;
+    }
+
+    public override bool TryGetRight(out TRight value)
+    {
+        value = default(TRight);
+        return false;
+    }
+
     public override TResult Match<TResult>(Func<TLeft, TResult> left, Func<TRight, TResult> right)
     {
         return left(this.value);

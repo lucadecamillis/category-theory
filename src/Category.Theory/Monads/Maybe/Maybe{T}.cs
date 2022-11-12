@@ -13,6 +13,8 @@ public abstract class Maybe<T>
 
     public abstract T GetValueOrThrow(string errorMessage = null);
 
+    public abstract bool TryGetValue(out T value);
+
     public abstract T GetValueOrFallback(T fallbackValue);
 
     public abstract Maybe<TResult> Select<TResult>(Func<T, TResult> selector);

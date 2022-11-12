@@ -55,4 +55,16 @@ internal class Right<TLeft, TRight> : Either<TLeft, TRight>
     {
         return this.value;
     }
+
+    public override bool TryGetLeft(out TLeft value)
+    {
+        value = default(TLeft);
+        return false;
+    }
+
+    public override bool TryGetRight(out TRight value)
+    {
+        value = this.value;
+        return true;
+    }
 }

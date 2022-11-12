@@ -10,7 +10,9 @@ public class EitherUnitTests
         Either<string, int> e = 3;
 
         Assert.True(e.HasRight());
+        Assert.True(e.TryGetRight(out var value) && value == 3);
         Assert.False(e.HasLeft());
+        Assert.False(e.TryGetLeft(out _));
     }
 
     [Fact]
@@ -19,7 +21,9 @@ public class EitherUnitTests
         Either<string, int> e = "value";
 
         Assert.True(e.HasLeft());
+        Assert.True(e.TryGetLeft(out var value) && value == "value");
         Assert.False(e.HasRight());
+        Assert.False(e.TryGetRight(out _));
     }
 
     [Fact]
