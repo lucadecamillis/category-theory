@@ -1,4 +1,5 @@
 using Category.Theory.SumTypes;
+using Category.Theory.Types;
 
 namespace Category.Theory.Tests;
 
@@ -98,6 +99,34 @@ public class OneOfUnitTests
         var hit2 = new HitTest<string>();
         o.IfT2(hit2.Action);
         Assert.True(hit2.IsHit());
+    }
+
+    [Fact]
+    public void Either_ImplicitOperator()
+    {
+        var parseSuccess = TryParseNumber("5");
+        Assert.True(parseSuccess.HasT2());
+
+        var parseNone = TryParseNumber(null);
+        Assert.True(parseNone.HasT1());
+
+        var parseFailure = TryParseNumber("5.6");
+        Assert.True(parseFailure.HasT0());
+    }
+
+    private OneOf<string, None, int> TryParseNumber(string candidate)
+    {
+        if (string.IsNullOrWhiteSpace(candidate))
+        {
+            return None.Instance;
+        }
+
+        if (int.TryParse(candidate, out int result))
+        {
+            return result;
+        }
+
+        return $"Cannot parse string {candidate}";
     }
 
     private class HitTest<T>
