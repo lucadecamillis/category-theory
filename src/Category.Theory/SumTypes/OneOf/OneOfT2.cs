@@ -9,10 +9,16 @@ namespace Category.Theory.SumTypes;
 /// <typeparam name="T2"></typeparam>
 public class OneOf<T0, T1, T2>
 {
-    readonly T0 _value0;
-    readonly T1 _value1;
-    readonly T2 _value2;
-    readonly int _index;
+    readonly T0 value0;
+    readonly T1 value1;
+    readonly T2 value2;
+    readonly int index;
+
+    public OneOf(T0 value0) : this(index: 0, value0: value0) { }
+
+    public OneOf(T1 value1) : this(index: 1, value1: value1) { }
+
+    public OneOf(T2 value2) : this(index: 2, value2: value2) { }
 
     private OneOf(int index, T0 value0 = default, T1 value1 = default, T2 value2 = default)
     {
@@ -25,7 +31,7 @@ public class OneOf<T0, T1, T2>
                         throw new ArgumentNullException(nameof(value0));
                     }
 
-                    _value0 = value0;
+                    this.value0 = value0;
                 }
                 break;
             case 1:
@@ -35,7 +41,7 @@ public class OneOf<T0, T1, T2>
                         throw new ArgumentNullException(nameof(value1));
                     }
 
-                    _value1 = value1;
+                    this.value1 = value1;
                 }
                 break;
             case 2:
@@ -45,7 +51,7 @@ public class OneOf<T0, T1, T2>
                         throw new ArgumentNullException(nameof(value2));
                     }
 
-                    _value2 = value2;
+                    this.value2 = value2;
                 }
                 break;
             default:
@@ -54,48 +60,48 @@ public class OneOf<T0, T1, T2>
                 }
         }
 
-        _index = index;
+        this.index = index;
     }
 
-    public static implicit operator OneOf<T0, T1, T2>(T0 t) => new OneOf<T0, T1, T2>(0, value0: t);
+    public static implicit operator OneOf<T0, T1, T2>(T0 t) => new OneOf<T0, T1, T2>(t);
 
-    public static implicit operator OneOf<T0, T1, T2>(T1 t) => new OneOf<T0, T1, T2>(1, value1: t);
+    public static implicit operator OneOf<T0, T1, T2>(T1 t) => new OneOf<T0, T1, T2>(t);
 
-    public static implicit operator OneOf<T0, T1, T2>(T2 t) => new OneOf<T0, T1, T2>(2, value2: t);
+    public static implicit operator OneOf<T0, T1, T2>(T2 t) => new OneOf<T0, T1, T2>(t);
 
     public TResult Match<TResult>(Func<T0, TResult> f0, Func<T1, TResult> f1, Func<T2, TResult> f2)
     {
-        switch (_index)
+        switch (this.index)
         {
             case 0:
                 {
-                    return f0(_value0);
+                    return f0(this.value0);
                 }
             case 1:
                 {
-                    return f1(_value1);
+                    return f1(this.value1);
                 }
             case 2:
                 {
-                    return f2(_value2);
+                    return f2(this.value2);
                 }
             default:
                 {
-                    throw new InvalidOperationException($"Malformed OneOf (Index {_index})");
+                    throw new InvalidOperationException($"Malformed OneOf (Index {this.index})");
                 }
         }
     }
 
     public bool HasT0()
     {
-        return _index == 0;
+        return this.index == 0;
     }
 
     public OneOf<T0, T1, T2> IfT0(Action<T0> action)
     {
-        if (_index == 0)
+        if (this.index == 0)
         {
-            action(_value0);
+            action(this.value0);
         }
 
         return this;
@@ -105,9 +111,9 @@ public class OneOf<T0, T1, T2>
     {
         value = default(T0);
 
-        if (_index == 0)
+        if (this.index == 0)
         {
-            value = _value0;
+            value = this.value0;
             return true;
         }
 
@@ -116,9 +122,9 @@ public class OneOf<T0, T1, T2>
 
     public T0 GetT0OrFallback(T0 fallbackValue)
     {
-        if (_index == 0)
+        if (this.index == 0)
         {
-            return _value0;
+            return this.value0;
         }
 
         return fallbackValue;
@@ -126,14 +132,14 @@ public class OneOf<T0, T1, T2>
 
     public bool HasT1()
     {
-        return _index == 1;
+        return this.index == 1;
     }
 
     public OneOf<T0, T1, T2> IfT1(Action<T1> action)
     {
-        if (_index == 1)
+        if (this.index == 1)
         {
-            action(_value1);
+            action(this.value1);
         }
 
         return this;
@@ -143,9 +149,9 @@ public class OneOf<T0, T1, T2>
     {
         value = default(T1);
 
-        if (_index == 1)
+        if (this.index == 1)
         {
-            value = _value1;
+            value = this.value1;
             return true;
         }
 
@@ -154,9 +160,9 @@ public class OneOf<T0, T1, T2>
 
     public T1 GetT1OrFallback(T1 fallbackValue)
     {
-        if (_index == 1)
+        if (this.index == 1)
         {
-            return _value1;
+            return this.value1;
         }
 
         return fallbackValue;
@@ -164,14 +170,14 @@ public class OneOf<T0, T1, T2>
 
     public bool HasT2()
     {
-        return _index == 2;
+        return this.index == 2;
     }
 
     public OneOf<T0, T1, T2> IfT2(Action<T2> action)
     {
-        if (_index == 2)
+        if (this.index == 2)
         {
-            action(_value2);
+            action(this.value2);
         }
 
         return this;
@@ -181,9 +187,9 @@ public class OneOf<T0, T1, T2>
     {
         value = default(T2);
 
-        if (_index == 2)
+        if (this.index == 2)
         {
-            value = _value2;
+            value = this.value2;
             return true;
         }
 
@@ -192,9 +198,9 @@ public class OneOf<T0, T1, T2>
 
     public T2 GetT2OrFallback(T2 fallbackValue)
     {
-        if (_index == 2)
+        if (this.index == 2)
         {
-            return _value2;
+            return this.value2;
         }
 
         return fallbackValue;
