@@ -63,62 +63,6 @@ public static class MaybeExtensions
     }
 
     /// <summary>
-    /// Functor mapping
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <typeparam name="TResult"></typeparam>
-    /// <param name="maybe"></param>
-    /// <param name="selector"></param>
-    /// <returns></returns>
-    /// <exception cref="ArgumentNullException"></exception>
-    public static Maybe<TResult> Select<T, TResult>(
-        this Maybe<T> maybe,
-        Func<T, TResult> selector)
-    {
-        if (selector == null)
-        {
-            throw new ArgumentNullException(nameof(selector));
-        }
-
-        if (maybe.TryGetValue(out T value))
-        {
-            TResult result = selector(value);
-            if (result != null)
-            {
-                return result;
-            }
-        }
-
-        return None<TResult>.Instance;
-    }
-
-    /// <summary>
-    /// Monadic join
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <typeparam name="TResult"></typeparam>
-    /// <param name="maybe"></param>
-    /// <param name="selector"></param>
-    /// <returns></returns>
-    /// <exception cref="ArgumentNullException"></exception>
-    public static Maybe<TResult> SelectMany<T, TResult>(
-        this Maybe<T> maybe,
-        Func<T, Maybe<TResult>> selector)
-    {
-        if (selector == null)
-        {
-            throw new ArgumentNullException(nameof(selector));
-        }
-
-        if (maybe.TryGetValue(out T value))
-        {
-            return selector(value);
-        }
-
-        return None<TResult>.Instance;
-    }
-
-    /// <summary>
     /// Monadic join (where inner monad is Nullable)
     /// </summary>
     /// <typeparam name="T"></typeparam>
@@ -188,37 +132,7 @@ public static class MaybeExtensions
 
         return None<T>.Instance;
     }
-
-    /// <summary>
-    /// Monadic match
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <typeparam name="TResult"></typeparam>
-    /// <param name="maybe"></param>
-    /// <param name="someFunc"></param>
-    /// <param name="noneFunc"></param>
-    /// <returns></returns>
-    /// <exception cref="ArgumentNullException"></exception>
-    public static TResult Match<T, TResult>(
-        this Maybe<T> maybe,
-        Func<T, TResult> someFunc,
-        Func<TResult> noneFunc)
-    {
-        if (someFunc == null)
-        {
-            throw new ArgumentNullException(nameof(someFunc));
-        }
-
-        if (maybe.TryGetValue(out T value))
-        {
-            return someFunc(value);
-        }
-        else
-        {
-            return noneFunc();
-        }
-    }
-
+    
     /// <summary>
     /// Execute the appropriate action based on the maybe content
     /// </summary>

@@ -13,6 +13,57 @@ public abstract class Maybe<T>
 
     public abstract bool EqualsTo(T item);
 
+    public Maybe<TResult> Select<TResult>(Func<T, TResult> selector)
+    {
+        if (selector == null)
+        {
+            throw new ArgumentNullException(nameof(selector));
+        }
+
+        if (TryGetValue(out T value))
+        {
+            TResult result = selector(value);
+            if (result != null)
+            {
+                return result;
+            }
+        }
+
+        return None<TResult>.Instance;
+    }
+
+    public Maybe<TResult> SelectMany<TResult>(Func<T, Maybe<TResult>> selector)
+    {
+        if (selector == null)
+        {
+            throw new ArgumentNullException(nameof(selector));
+        }
+
+        if (TryGetValue(out T value))
+        {
+            return selector(value);
+        }
+
+        return None<TResult>.Instance;
+    }
+
+    public TResult Match<TResult>(Func<T, TResult> someFunc, Func<TResult> noneFunc)
+    {
+        if (someFunc == null)
+        {
+            throw new ArgumentNullException(nameof(someFunc));
+        }
+
+        if (TryGetValue(out T value))
+        {
+            return someFunc(value);
+        }
+        else
+        {
+            return noneFunc();
+        }
+    }
+
     public Maybe<TResult> OfType<TResult>()
     {
         if (TryGetValue(out T value) && value is TResult t)
