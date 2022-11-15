@@ -1,3 +1,5 @@
+using Category.Theory.Linq;
+
 namespace Category.Theory.Monads;
 
 public abstract class Maybe<T>
@@ -72,6 +74,25 @@ public abstract class Maybe<T>
         }
 
         return None<TResult>.Instance;
+    }
+
+    public IEnumerable<TResult> AsEnumerable<TResult>(Func<T, IEnumerable<TResult>> selector)
+    {
+        if (selector == null)
+        {
+            throw new ArgumentNullException(nameof(selector));
+        }
+
+        if (TryGetValue(out T value))
+        {
+            IEnumerable<TResult> collection = selector(value);
+            if (!collection.NullOrEmpty())
+            {
+                return collection;
+            }
+        }
+
+        return Enumerable.Empty<TResult>();
     }
 
     public static implicit operator Maybe<T>(T value) => new Some<T>(value);

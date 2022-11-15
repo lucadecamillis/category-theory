@@ -378,37 +378,6 @@ public static class MaybeExtensions
         return Maybe.Some(source.First());
     }
 
-    /// <summary>
-    /// Select an <see cref="IEnumerable{T}"/> from the given maybe source
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <typeparam name="TResult"></typeparam>
-    /// <param name="maybe"></param>
-    /// <param name="selector"></param>
-    /// <returns></returns>
-    /// <exception cref="ArgumentNullException"></exception>
-    public static IEnumerable<TResult> AsEnumerable<T, TResult>(this Maybe<T> maybe, Func<T, IEnumerable<TResult>> selector)
-    {
-        if (selector == null)
-        {
-            throw new ArgumentNullException(nameof(selector));
-        }
-
-        return maybe
-            .SelectMany(e => CheckEmptyCollection(selector(e)))
-            .GetValueOrFallback(Enumerable.Empty<TResult>());
-    }
-
-    private static Maybe<IEnumerable<T>> CheckEmptyCollection<T>(IEnumerable<T> collection)
-    {
-        if (collection.NullOrEmpty())
-        {
-            return Maybe.None<IEnumerable<T>>();
-        }
-
-        return Maybe.Some(collection);
-    }
-
     private static Maybe<T> NullableToMaybe<T>(T? nullableValue) where T : struct
     {
         if (nullableValue.HasValue)
