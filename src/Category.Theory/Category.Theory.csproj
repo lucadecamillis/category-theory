@@ -5,7 +5,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <Authors>Luca De Camillis</Authors>
     <PackageId>Category.Theory</PackageId>
-    <PackageTags>category-theory;functional-programming</PackageTags>
+    <PackageTags>category-theory;functional-programming;maybe;either</PackageTags>
     <PackageDescription>Provides C# implementation of few patterns and structures theorized in category theory</PackageDescription>
     <PackageProjectUrl>https://github.com/lucadecamillis/category-theory</PackageProjectUrl>
     <RepositoryUrl>https://github.com/lucadecamillis/category-theory</RepositoryUrl>
