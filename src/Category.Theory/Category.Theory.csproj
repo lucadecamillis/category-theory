@@ -1,5 +1,19 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
+    <Description>Provides C# implementation of few patterns and structures theorized in category theory</Description>
+    <AssemblyTitle>Category.Theory</AssemblyTitle>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <Authors>Luca De Camillis</Authors>
+    <PackageId>Category.Theory</PackageId>
+    <PackageTags>category-theory;functional-programming</PackageTags>
+    <PackageDescription>Provides C# implementation of few patterns and structures theorized in category theory</PackageDescription>
+    <PackageProjectUrl>https://github.com/lucadecamillis/category-theory</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/lucadecamillis/category-theory</RepositoryUrl>
+    <Version>0.1.0</Version>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <DebugSymbols>true</DebugSymbols>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <IsPackable>true</IsPackable>
   </PropertyGroup>
 </Project>
