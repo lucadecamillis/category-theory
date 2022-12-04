@@ -88,7 +88,7 @@ public class MaybeUnitTests
     {
         var c = new Stubs.ClassWithCollection<int>();
         var m = Maybe.Some(c).AsEnumerable(e => e.Collection);
-        Assert.True(m.NullOrEmpty());
+        Assert.Empty(m);
     }
 
     [Fact]
@@ -96,6 +96,6 @@ public class MaybeUnitTests
     {
         var c = new Stubs.ClassWithCollection<int> { Collection = Array.Empty<int>() };
         var m = Maybe.Some(c).AsEnumerable(e => e.Collection);
-        Assert.True(m.NullOrEmpty());
+        Assert.Empty(m);
     }
 }

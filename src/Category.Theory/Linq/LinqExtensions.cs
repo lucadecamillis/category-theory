@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Category.Theory.Linq
 {
-    public static class LinqExtensions
+    internal static class LinqExtensions
     {
         /// <summary>
         /// Specifies whether the given collection is null or contains no elements
