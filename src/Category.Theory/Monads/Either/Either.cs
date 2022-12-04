@@ -1,14 +1,15 @@
-namespace Category.Theory.Monads;
-
-public static class Either
+namespace Category.Theory.Monads
 {
-    public static Either<TLeft, TRight> Left<TLeft, TRight>(TLeft value)
+    public static class Either
     {
-        return new Left<TLeft, TRight>(value);
-    }
+        public static Either<TLeft, TRight> Left<TLeft, TRight>(TLeft value)
+        {
+            return new Left<TLeft, TRight>(value);
+        }
 
-    public static Either<TLeft, TRight> Right<TLeft, TRight>(TRight value)
-    {
-        return new Right<TLeft, TRight>(value);
+        public static Either<TLeft, TRight> Right<TLeft, TRight>(TRight value)
+        {
+            return new Right<TLeft, TRight>(value);
+        }
     }
 }

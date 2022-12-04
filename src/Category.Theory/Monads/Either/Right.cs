@@ -1,70 +1,73 @@
-namespace Category.Theory.Monads;
+using System;
 
-internal class Right<TLeft, TRight> : Either<TLeft, TRight>
+namespace Category.Theory.Monads
 {
-    private readonly TRight value;
-
-    public Right(TRight value)
+    internal class Right<TLeft, TRight> : Either<TLeft, TRight>
     {
-        if (value == null)
+        private readonly TRight value;
+
+        public Right(TRight value)
         {
-            throw new ArgumentNullException(nameof(value));
+            if (value == null)
+            {
+                throw new ArgumentNullException(nameof(value));
+            }
+
+            this.value = value;
         }
 
-        this.value = value;
-    }
-
-    public override Either<TLeft, TRight> IfLeft(Action<TLeft> action)
-    {
-        return this;
-    }
-
-    public override Either<TLeft, TRight> IfRight(Action<TRight> action)
-    {
-        if (action == null)
+        public override Either<TLeft, TRight> IfLeft(Action<TLeft> action)
         {
-            throw new ArgumentNullException(nameof(action));
+            return this;
         }
 
-        action(this.value);
+        public override Either<TLeft, TRight> IfRight(Action<TRight> action)
+        {
+            if (action == null)
+            {
+                throw new ArgumentNullException(nameof(action));
+            }
 
-        return this;
-    }
+            action(this.value);
 
-    public override Either<TLeft, T1Right> Select<T1Right>(Func<TRight, T1Right> selector)
-    {
-        return new Right<TLeft, T1Right>(selector(this.value));
-    }
+            return this;
+        }
 
-    public override Either<TLeft, T1Right> SelectMany<T1Right>(Func<TRight, Either<TLeft, T1Right>> selector)
-    {
-        return selector(this.value);
-    }
+        public override Either<TLeft, T1Right> Select<T1Right>(Func<TRight, T1Right> selector)
+        {
+            return new Right<TLeft, T1Right>(selector(this.value));
+        }
 
-    public override TResult Match<TResult>(Func<TLeft, TResult> left, Func<TRight, TResult> right)
-    {
-        return right(this.value);
-    }
+        public override Either<TLeft, T1Right> SelectMany<T1Right>(Func<TRight, Either<TLeft, T1Right>> selector)
+        {
+            return selector(this.value);
+        }
 
-    public override bool HasLeft()
-    {
-        return false;
-    }
+        public override TResult Match<TResult>(Func<TLeft, TResult> left, Func<TRight, TResult> right)
+        {
+            return right(this.value);
+        }
 
-    public override bool HasRight()
-    {
-        return true;
-    }
+        public override bool HasLeft()
+        {
+            return false;
+        }
 
-    public override bool TryGetLeft(out TLeft value)
-    {
-        value = default(TLeft);
-        return false;
-    }
+        public override bool HasRight()
+        {
+            return true;
+        }
 
-    public override bool TryGetRight(out TRight value)
-    {
-        value = this.value;
-        return true;
+        public override bool TryGetLeft(out TLeft value)
+        {
+            value = default(TLeft);
+            return false;
+        }
+
+        public override bool TryGetRight(out TRight value)
+        {
+            value = this.value;
+            return true;
+        }
     }
 }
