@@ -1,1 +1,3 @@
-# category-theory
+# Category Theory ![Build status](https://github.com/lucadecamillis/category-theory/actions/workflows/ci.yml/badge.svg?branch=master) [![NuGet](https://img.shields.io/nuget/v/Category.Theory.svg)](https://www.nuget.org/packages/Category.Theory)
+
+Provides C# implementation of few patterns and structures theorized in category theory. The package also enables [LINQ Query Syntax](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/linq/query-syntax-and-method-syntax-in-linq) for several included types.
