@@ -53,6 +53,19 @@ public class NullableUnitTests
     }
 
     [Fact]
+    public void Nullable_QueryExp_Null()
+    {
+        int? number = null;
+        Guid? id = Guid.NewGuid();
+
+        var pair =
+            from n in number
+            from i in id
+            select new { n, i };
+        Assert.False(pair.HasValue());
+    }
+
+    [Fact]
     public void Mixed_QueryExp_Some()
     {
         var name = new System.Nullable<char>('n');
@@ -69,7 +82,7 @@ public class NullableUnitTests
         Assert.True(person.HasValue());
     }
 
-        [Fact]
+    [Fact]
     public void Mixed_QueryExp_None()
     {
         var name = new System.Nullable<char>('n');
@@ -84,5 +97,18 @@ public class NullableUnitTests
             from z in zipNumber
             select new { n, i, an, z };
         Assert.False(person.HasValue());
+    }
+
+    [Fact]
+    public void Mixed_QueryExp_Null()
+    {
+        int? number = null;
+        var id = Maybe.Some(Guid.NewGuid());
+
+        var pair =
+            from n in number
+            from i in id
+            select new { n, i };
+        Assert.False(pair.HasValue());
     }
 }

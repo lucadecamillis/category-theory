@@ -84,11 +84,6 @@ namespace Category.Theory.Nullable
             where T1 : struct
             where T2 : struct
         {
-            if (n1 == null)
-            {
-                throw new ArgumentNullException(nameof(n1));
-            }
-
             if (n2 == null)
             {
                 throw new ArgumentNullException(nameof(n2));
@@ -154,11 +149,6 @@ namespace Category.Theory.Nullable
             Func<T1, T2, TResult> tresult)
             where T1 : struct
         {
-            if (n1 == null)
-            {
-                throw new ArgumentNullException(nameof(n1));
-            }
-
             if (n2 == null)
             {
                 throw new ArgumentNullException(nameof(n2));
