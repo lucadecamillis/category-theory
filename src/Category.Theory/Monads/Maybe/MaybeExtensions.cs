@@ -94,13 +94,13 @@ namespace Category.Theory.Monads
         /// <typeparam name="TResult"></typeparam>
         /// <param name="t1"></param>
         /// <param name="t2"></param>
-        /// <param name="tresult"></param>
+        /// <param name="tResult"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
         public static Maybe<TResult> SelectMany<T1, T2, TResult>(
             this Maybe<T1> t1,
             Func<T1, Maybe<T2>> t2,
-            Func<T1, T2, TResult> tresult)
+            Func<T1, T2, TResult> tResult)
         {
             if (t1 == null)
             {
@@ -112,12 +112,12 @@ namespace Category.Theory.Monads
                 throw new ArgumentNullException(nameof(t2));
             }
 
-            if (tresult == null)
+            if (tResult == null)
             {
-                throw new ArgumentNullException(nameof(tresult));
+                throw new ArgumentNullException(nameof(tResult));
             }
 
-            return t1.SelectMany(x => t2(x).Select(y => tresult(x, y)));
+            return t1.SelectMany(x => t2(x).Select(y => tResult(x, y)));
         }
 
         /// <summary>
