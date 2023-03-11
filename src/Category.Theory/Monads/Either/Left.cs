@@ -43,21 +43,28 @@ namespace Category.Theory.Monads
             return this;
         }
 
-        public override bool TryGetLeft(out TLeft value)
+        public override bool TryGetLeft(out TLeft value, out TRight otherValue)
         {
             value = this.value;
+            otherValue = default;
             return true;
         }
 
-        public override bool TryGetRight(out TRight value)
+        public override bool TryGetRight(out TRight value, out TLeft otherValue)
         {
-            value = default(TRight);
+            value = default;
+            otherValue = this.value;
             return false;
         }
 
         public override TResult Match<TResult>(Func<TLeft, TResult> left, Func<TRight, TResult> right)
         {
             return left(this.value);
+        }
+
+        public override void Iter(Action<TLeft> leftAction, Action<TRight> rightAction)
+        {
+            leftAction(this.value);
         }
 
         public override Either<TLeft, T1Right> Select<T1Right>(Func<TRight, T1Right> selector)

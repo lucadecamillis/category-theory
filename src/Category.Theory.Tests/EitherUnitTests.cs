@@ -9,21 +9,36 @@ public class EitherUnitTests
     {
         Either<string, int> e = 3;
 
+        string left; int right;
+
         Assert.True(e.HasRight());
-        Assert.True(e.TryGetRight(out var value) && value == 3);
+        Assert.True(e.TryGetRight(out right, out left));
+        Assert.Equal(3, right);
+        Assert.Null(left);
+
         Assert.False(e.HasLeft());
-        Assert.False(e.TryGetLeft(out _));
+        Assert.False(e.TryGetLeft(out left, out right));
+        Assert.Equal(3, right);
+        Assert.Null(left);
     }
 
     [Fact]
     public void Either_CanCreateLeft()
     {
-        Either<string, int> e = "value";
+        string value = nameof(value);
+        Either<string, int> e = value;
+
+        string left; int right;
 
         Assert.True(e.HasLeft());
-        Assert.True(e.TryGetLeft(out var value) && value == "value");
+        Assert.True(e.TryGetLeft(out left, out right));
+        Assert.Equal(value, left);
+        Assert.Equal(0, right);
+
         Assert.False(e.HasRight());
-        Assert.False(e.TryGetRight(out _));
+        Assert.False(e.TryGetRight(out right, out left));
+        Assert.Equal(value, left);
+        Assert.Equal(0, right);
     }
 
     [Fact]

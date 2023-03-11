@@ -8,7 +8,19 @@ namespace Category.Theory.Monads
             this Either<TLeft, TRight> either,
             TRight fallbackValue)
         {
-            if (either.TryGetRight(out TRight value))
+            if (either.TryGetRight(out TRight value, out _))
+            {
+                return value;
+            }
+
+            return fallbackValue;
+        }
+
+        public static TLeft GetLeftOrFallback<TLeft, TRight>(
+            this Either<TLeft, TRight> either,
+            TLeft fallbackValue)
+        {
+            if (either.TryGetLeft(out TLeft value, out _))
             {
                 return value;
             }
@@ -26,8 +38,8 @@ namespace Category.Theory.Monads
         public static Maybe<T> ToMaybe<TLeft, T>(this Either<TLeft, T> either)
         {
             return either.Match(
-                Left: l => Maybe.None<T>(),
-                Right: r => r);
+                left: l => Maybe.None<T>(),
+                right: r => r);
         }
 
         /// <summary>

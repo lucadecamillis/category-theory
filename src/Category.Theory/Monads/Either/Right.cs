@@ -48,6 +48,11 @@ namespace Category.Theory.Monads
             return right(this.value);
         }
 
+        public override void Iter(Action<TLeft> leftAction, Action<TRight> rightAction)
+        {
+            rightAction(this.value);
+        }
+
         public override bool HasLeft()
         {
             return false;
@@ -58,15 +63,17 @@ namespace Category.Theory.Monads
             return true;
         }
 
-        public override bool TryGetLeft(out TLeft value)
+        public override bool TryGetLeft(out TLeft value, out TRight otherValue)
         {
-            value = default(TLeft);
+            value = default;
+            otherValue = this.value;
             return false;
         }
 
-        public override bool TryGetRight(out TRight value)
+        public override bool TryGetRight(out TRight value, out TLeft otherValue)
         {
             value = this.value;
+            otherValue = default;
             return true;
         }
     }
