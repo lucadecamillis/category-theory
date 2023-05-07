@@ -37,6 +37,31 @@ namespace Category.Theory.Monads
             return None<TResult>.Instance;
         }
 
+        /// <summary>
+        /// Selection of a nullable struct value
+        /// </summary>
+        /// <typeparam name="TResult"></typeparam>
+        /// <param name="selector"></param>
+        /// <returns></returns>
+        public Maybe<TResult> Select<TResult>(Func<T, TResult?> selector) where TResult : struct
+        {
+            if (selector == null)
+            {
+                throw new ArgumentNullException(nameof(selector));
+            }
+
+            if (TryGetValue(out T value))
+            {
+                TResult? result = selector(value);
+                if (result.HasValue)
+                {
+                    return result.Value;
+                }
+            }
+
+            return None<TResult>.Instance;
+        }
+
         public Maybe<TResult> SelectMany<TResult>(Func<T, Maybe<TResult>> selector)
         {
             if (selector == null)
