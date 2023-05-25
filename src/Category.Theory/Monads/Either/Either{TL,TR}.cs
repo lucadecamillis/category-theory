@@ -20,6 +20,10 @@ namespace Category.Theory.Monads
 
         public abstract Either<TLeft, TRight> IfRight(Action<TRight> action);
 
+        public abstract Either<TLeft, TRight> If<T>(Action<TLeft> action);
+
+        public abstract Either<TLeft, TRight> If<T>(Action<TRight> action);
+
         /// <summary>
         /// If True the left value is returned and the other (right) value is set the its default.
         /// If False values are returned the other way around.
@@ -37,6 +41,13 @@ namespace Category.Theory.Monads
         /// <param name="otherValue"></param>
         /// <returns></returns>
         public abstract bool TryGetRight(out TRight value, out TLeft otherValue);
+
+        public abstract bool TryGet<T>(out TLeft value, out TRight otherValue);
+        public abstract bool TryGet(out TLeft value);
+        public abstract bool TryGet(out TRight otherValue);
+
+        public abstract bool Has<T>();
+
 
         public abstract Either<TLeft, TResult> Select<TResult>(Func<TRight, TResult> selector);
 
