@@ -144,7 +144,7 @@ namespace Category.Theory.Monads
         /// <param name="someAction"></param>
         /// <param name="noneAction"></param>
         /// <exception cref="ArgumentNullException"></exception>
-        public static void Iter<T>(
+        public static Maybe<T> Iter<T>(
             this Maybe<T> maybe,
             Action<T> someAction,
             Action noneAction)
@@ -152,6 +152,11 @@ namespace Category.Theory.Monads
             if (someAction == null)
             {
                 throw new ArgumentNullException(nameof(someAction));
+            }
+
+            if (noneAction == null)
+            {
+                throw new ArgumentNullException(nameof(noneAction));
             }
 
             if (maybe.TryGetValue(out T value))
@@ -162,6 +167,8 @@ namespace Category.Theory.Monads
             {
                 noneAction();
             }
+
+            return maybe;
         }
 
         /// <summary>
@@ -189,6 +196,11 @@ namespace Category.Theory.Monads
 
         public static Maybe<T> IfSome<T>(this Maybe<T> maybe, Action<T> action)
         {
+            if (maybe == null)
+            {
+                throw new ArgumentNullException(nameof(maybe));
+            }
+
             if (action == null)
             {
                 throw new ArgumentNullException(nameof(action));
@@ -197,6 +209,26 @@ namespace Category.Theory.Monads
             if (maybe.TryGetValue(out T value))
             {
                 action.Invoke(value);
+            }
+
+            return maybe;
+        }
+
+        public static Maybe<T> IfNone<T>(this Maybe<T> maybe, Action action)
+        {
+            if (maybe == null)
+            {
+                throw new ArgumentNullException(nameof(maybe));
+            }
+
+            if (action == null)
+            {
+                throw new ArgumentNullException(nameof(action));
+            }
+
+            if (!maybe.HasValue())
+            {
+                action.Invoke();
             }
 
             return maybe;
@@ -263,7 +295,7 @@ namespace Category.Theory.Monads
         /// <returns></returns>
         public static IEnumerable<T> SelectItems<T>(this IEnumerable<Maybe<T>> items)
         {
-            if (items.NullOrEmpty())
+            if (items == null)
             {
                 return Enumerable.Empty<T>();
             }
@@ -283,7 +315,7 @@ namespace Category.Theory.Monads
         /// <returns></returns>
         public static Maybe<T> Select<K, T>(this IDictionary<K, T> dictionary, K key)
         {
-            if (dictionary.NullOrEmpty())
+            if (dictionary == null)
             {
                 return Maybe.None<T>();
             }
@@ -307,7 +339,7 @@ namespace Category.Theory.Monads
         /// <returns></returns>
         public static Maybe<T> Select<K, T>(this IDictionary<K, Maybe<T>> dictionary, K key)
         {
-            if (dictionary.NullOrEmpty())
+            if (dictionary == null)
             {
                 return Maybe.None<T>();
             }
@@ -331,7 +363,7 @@ namespace Category.Theory.Monads
         /// <returns></returns>
         public static Maybe<T> Select<T>(this IList<T> source, int idx)
         {
-            if (source.NullOrEmpty())
+            if (source == null)
             {
                 // Empty collection
                 return Maybe.None<T>();
@@ -355,8 +387,7 @@ namespace Category.Theory.Monads
         /// <returns></returns>
         public static Maybe<T> TrySingle<T>(this IEnumerable<T> source)
         {
-            T element;
-            if (source.IsSingle(out element))
+            if (LinqExtensions.IsSingle(source, out T element))
             {
                 return Maybe.Some(element);
             }
@@ -373,12 +404,17 @@ namespace Category.Theory.Monads
         /// <returns></returns>
         public static Maybe<T> TryFirst<T>(this IEnumerable<T> source)
         {
-            if (source.NullOrEmpty())
+            if (source == null)
             {
                 return Maybe.None<T>();
             }
 
-            return Maybe.Some(source.First());
+            if (LinqExtensions.TryFirst(source, out T element))
+            {
+                return Maybe.Some(element);
+            }
+
+            return Maybe.None<T>();
         }
 
         private static Maybe<T> NullableToMaybe<T>(T? nullableValue) where T : struct

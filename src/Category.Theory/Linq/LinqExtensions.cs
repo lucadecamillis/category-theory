@@ -1,43 +1,9 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Category.Theory.Linq
 {
     internal static class LinqExtensions
     {
-        /// <summary>
-        /// Specifies whether the given collection is null or contains no elements
-        /// </summary>
-        /// <param name="collection"></param>
-        /// <returns></returns>
-        public static bool NullOrEmpty(this IEnumerable collection)
-        {
-            return collection == null || !collection.GetEnumerator().MoveNext();
-        }
-
-        /// <summary>
-        /// Specifies whether the given collection is null or contains no elements
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="collection"></param>
-        /// <returns></returns>
-        public static bool NullOrEmpty<T>(this IEnumerable<T> collection)
-        {
-            return collection == null || !collection.Any();
-        }
-
-        /// <summary>
-        /// Check whether the given collection contains a single element of the given type
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="collection"></param>
-        /// <returns></returns>
-        public static bool IsSingle<T>(this IEnumerable<T> collection)
-        {
-            return !collection.NullOrEmpty() && !collection.Skip(1).Any();
-        }
-
         /// <summary>
         /// Check whether the given collection contains a single element of the given type.
         /// Return the single element in the out parameter
@@ -45,7 +11,7 @@ namespace Category.Theory.Linq
         /// <typeparam name="T"></typeparam>
         /// <param name="collection"></param>
         /// <returns></returns>
-        public static bool IsSingle<T>(this IEnumerable collection, out T element)
+        public static bool IsSingle<T>(this IEnumerable<T> collection, out T element)
         {
             element = default(T);
 
@@ -56,23 +22,47 @@ namespace Category.Theory.Linq
             }
 
             // Check if we have the first element
-            IEnumerator enumerator = collection.GetEnumerator();
+            IEnumerator<T> enumerator = collection.GetEnumerator();
             if (!enumerator.MoveNext())
             {
                 return false;
             }
 
-            if (!(enumerator.Current is T))
+            // Store the first element
+            element = enumerator.Current;
+
+            // Now we shouldn't be able to go any further with our enumerator
+            return !enumerator.MoveNext();
+        }
+
+        /// <summary>
+        /// Try to get the first item out of the collection
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="collection"></param>
+        /// <param name="element"></param>
+        /// <returns></returns>
+        public static bool TryFirst<T>(this IEnumerable<T> collection, out T element)
+        {
+            element = default(T);
+
+            if (collection == null)
             {
-                // The first element is not of type T
+                // The collection is null, no element present
+                return false;
+            }
+
+            // Check if we have the first element
+            IEnumerator<T> enumerator = collection.GetEnumerator();
+            if (!enumerator.MoveNext())
+            {
                 return false;
             }
 
             // Store the first element
-            element = (T)enumerator.Current;
+            element = enumerator.Current;
 
-            // Now we shouldn't be able to go any further with our enumerator
-            return !enumerator.MoveNext();
+            return true;
         }
     }
 }

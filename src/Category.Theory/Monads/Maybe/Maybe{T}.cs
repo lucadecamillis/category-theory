@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Category.Theory.Linq;
 
 namespace Category.Theory.Monads
 {
@@ -106,21 +105,7 @@ namespace Category.Theory.Monads
 
         public IEnumerable<TResult> AsEnumerable<TResult>(Func<T, IEnumerable<TResult>> selector)
         {
-            if (selector == null)
-            {
-                throw new ArgumentNullException(nameof(selector));
-            }
-
-            if (TryGetValue(out T value))
-            {
-                IEnumerable<TResult> collection = selector(value);
-                if (!collection.NullOrEmpty())
-                {
-                    return collection;
-                }
-            }
-
-            return Enumerable.Empty<TResult>();
+            return this.Select(selector).GetValueOrFallback(Enumerable.Empty<TResult>());
         }
 
         public static implicit operator Maybe<T>(T value) => new Some<T>(value);

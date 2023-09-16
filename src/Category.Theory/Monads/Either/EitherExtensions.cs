@@ -77,5 +77,42 @@ namespace Category.Theory.Monads
 
             return t1.SelectMany(x => t2(x).Select(y => tResult(x, y)));
         }
+
+        /// <summary>
+        /// Similar to <see cref="Either{TLeft, TRight}.TryGetLeft"/>
+        /// </summary>
+        /// <typeparam name="TLeft"></typeparam>
+        /// <typeparam name="TRight"></typeparam>
+        /// <param name="either"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static bool TryGet<TLeft, TRight>(this Either<TLeft, TRight> either, out TLeft value)
+        {
+            if (either == null)
+            {
+                throw new ArgumentNullException(nameof(either));
+            }
+
+            return either.TryGetLeft(out value, out _);
+        }
+
+        /// <summary>
+        /// Similar to <see cref="Either{TLeft, TRight}.TryGetRight"/>
+        /// </summary>
+        /// <typeparam name="TLeft"></typeparam>
+        /// <typeparam name="TRight"></typeparam>
+        /// <param name="either"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static bool TryGet<TLeft, TRight>(this Either<TLeft, TRight> either, out TRight value)
+        {
+            if (either == null)
+            {
+                throw new ArgumentNullException(nameof(either));
+            }
+
+            return either.TryGetRight(out value, out _);
+        }
     }
 }

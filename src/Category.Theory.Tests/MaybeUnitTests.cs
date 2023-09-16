@@ -1,4 +1,3 @@
-using Category.Theory.Linq;
 using Category.Theory.Monads;
 using Category.Theory.Types;
 
