@@ -1,4 +1,5 @@
 using Category.Theory.Monads;
+using Category.Theory.Stubs;
 using Category.Theory.Types;
 
 namespace Category.Theory.Tests;
@@ -18,16 +19,15 @@ public class MaybeUnitTests
     {
         Maybe<int> m = 4;
         Assert.True(m.HasValue());
-        Assert.True(m.TryGetValue(out var value) && value == 4);
-        Assert.Equal(4, m.GetValueOrFallback(-1));
+        Assert.True(m.TryGetValue(out var value));
+        Assert.Equal(4, value);
     }
 
     [Fact]
-    public void Maybe_CanMap()
+    public void Maybe_CanSelect()
     {
         Maybe<int> m = Maybe.Some(4).Select(e => e + 6).Select(e => e / 2);
-        Assert.True(m.HasValue());
-        Assert.Equal(5, m.GetValueOrFallback(-1));
+        Assert.Equal(5, m);
     }
 
     [Fact]
@@ -85,7 +85,7 @@ public class MaybeUnitTests
     [Fact]
     public void Maybe_SelectNullCollection()
     {
-        var c = new Stubs.ClassWithCollection<int>();
+        var c = new ClassWithCollection<int>();
         var m = Maybe.Some(c).AsEnumerable(e => e.Collection);
         Assert.Empty(m);
     }
@@ -93,8 +93,57 @@ public class MaybeUnitTests
     [Fact]
     public void Maybe_SelectEmptyCollection()
     {
-        var c = new Stubs.ClassWithCollection<int> { Collection = Array.Empty<int>() };
+        var c = new ClassWithCollection<int> { Collection = Array.Empty<int>() };
         var m = Maybe.Some(c).AsEnumerable(e => e.Collection);
         Assert.Empty(m);
+    }
+
+    [Fact]
+    public void Maybe_CanCheckNull()
+    {
+        SimpleClass? item = null;
+        Assert.False(Maybe.CheckNull(item).HasValue());
+
+        item = new SimpleClass();
+        Assert.True(Maybe.CheckNull(item).HasValue());
+    }
+
+    [Fact]
+    public void Maybe_CanCheckOfType()
+    {
+        object item = new SimpleClass();
+        Assert.True(Maybe.CheckNull(item).OfType<SimpleClass>().HasValue());
+    }
+
+    [Fact]
+    public void Maybe_CanEqualsTo()
+    {
+        Assert.True(Maybe.Some(5).EqualsTo(5));
+        Assert.False(Maybe.Some(5).EqualsTo(4));
+        Assert.False(Maybe.None<int>().EqualsTo(3));
+
+        Assert.Equal(Maybe.Some(5), 5);
+    }
+
+    [Fact]
+    public void Maybe_CanMatch()
+    {
+        Maybe<int> m = 5;
+        Assert.Equal(8, m.Match(e => e + 3, () => -1));
+        Assert.Equal(-1, Maybe.None<int>().Match(e => e + 1, () => -1));
+    }
+
+    [Fact]
+    public void Maybe_ThrowIfNone()
+    {
+        var m = Maybe.None<int>();
+        Assert.Throws<SimpleException>(() => m.GetValueOrThrow(new SimpleException("Exception")));
+    }
+
+    [Fact]
+    public void Maybe_CanFlatMap()
+    {
+        var m = Maybe.Some<Maybe<int>>(5);
+        Assert.True(m.FlatMap().EqualsTo(5));
     }
 }
