@@ -66,6 +66,30 @@ namespace Category.Theory.Monads
         }
 
         /// <summary>
+        /// Get the value from the given maybe or from the provided delegate that produces a fallback value
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="maybe"></param>
+        /// <param name="fallbackFunc"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static T GetValueOrFallback<T>(this Maybe<T> maybe, Func<T> fallbackFunc)
+        {
+            if (fallbackFunc == null)
+            {
+                throw new ArgumentNullException(nameof(fallbackFunc));
+            }
+
+            if (maybe.TryGetValue(out T value))
+            {
+                return value;
+            }
+
+            return fallbackFunc.Invoke();
+        }
+
+
+        /// <summary>
         /// Monadic join (where inner monad is Nullable)
         /// </summary>
         /// <typeparam name="T"></typeparam>
@@ -242,9 +266,9 @@ namespace Category.Theory.Monads
         /// <returns></returns>
         public static T? ToNullable<T>(this Maybe<T> maybe) where T : struct
         {
-            if (maybe.HasValue())
+            if (maybe.TryGetValue(out T value))
             {
-                return maybe.GetValueOrThrow();
+                return value;
             }
 
             return null;
@@ -297,12 +321,16 @@ namespace Category.Theory.Monads
         {
             if (items == null)
             {
-                return Enumerable.Empty<T>();
+                yield break;
             }
 
-            return items
-                .Where(i => i.HasValue())
-                .Select(i => i.GetValueOrThrow());
+            foreach (var item in items)
+            {
+                if (item.TryGetValue(out T t))
+                {
+                    yield return t;
+                }
+            }
         }
 
         /// <summary>
@@ -396,6 +424,31 @@ namespace Category.Theory.Monads
         }
 
         /// <summary>
+        /// Check whether the given source collection contains one and only one element
+        /// after the predicate has been applied.
+        /// In that case return the element, otherwise returns an empty object
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="source"></param>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static Maybe<T> TrySingle<T>(this IEnumerable<T> source, Func<T, bool> predicate)
+        {
+            if (predicate == null)
+            {
+                throw new ArgumentNullException(nameof(predicate));
+            }
+
+            if (source == null)
+            {
+                return Maybe.None<T>();
+            }
+
+            return source.Where(predicate).TrySingle();
+        }
+
+        /// <summary>
         /// Return the first occurrence of the element in the source
         /// or an empty object in case the list is empty
         /// </summary>
@@ -415,6 +468,31 @@ namespace Category.Theory.Monads
             }
 
             return Maybe.None<T>();
+        }
+
+        /// <summary>
+        /// Return the first occurrence of the element in the source
+        /// after the predicate has been applied
+        /// or an empty object in case the list is empty
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="source"></param>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static Maybe<T> TryFirst<T>(this IEnumerable<T> source, Func<T, bool> predicate)
+        {
+            if (predicate == null)
+            {
+                throw new ArgumentNullException(nameof(predicate));
+            }
+
+            if (source == null)
+            {
+                return Maybe.None<T>();
+            }
+
+            return source.Where(predicate).TryFirst();
         }
 
         private static Maybe<T> NullableToMaybe<T>(T? nullableValue) where T : struct

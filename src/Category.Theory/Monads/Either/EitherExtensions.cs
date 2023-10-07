@@ -59,7 +59,6 @@ namespace Category.Theory.Monads
             Func<T1, Either<TLeft, T2>> t2,
             Func<T1, T2, TResult> tResult)
         {
-
             if (t1 == null)
             {
                 throw new ArgumentNullException(nameof(t1));

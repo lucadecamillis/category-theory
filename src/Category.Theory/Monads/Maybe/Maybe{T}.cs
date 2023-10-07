@@ -108,6 +108,11 @@ namespace Category.Theory.Monads
             return this.Select(selector).GetValueOrFallback(Enumerable.Empty<TResult>());
         }
 
+        public IList<TResult> AsList<TResult>(Func<T, IList<TResult>> selector)
+        {
+            return this.Select(selector).GetValueOrFallback(Array.Empty<TResult>());
+        }
+
         public static implicit operator Maybe<T>(T value) => new Some<T>(value);
 
         public static implicit operator Maybe<T>(Types.None _) => new None<T>();

@@ -104,14 +104,14 @@ public class MaybeUnitTests
         SimpleClass? item = null;
         Assert.False(Maybe.CheckNull(item).HasValue());
 
-        item = new SimpleClass();
+        item = new SimpleClass(3);
         Assert.True(Maybe.CheckNull(item).HasValue());
     }
 
     [Fact]
     public void Maybe_CanCheckOfType()
     {
-        object item = new SimpleClass();
+        object item = new SimpleClass(4);
         Assert.True(Maybe.CheckNull(item).OfType<SimpleClass>().HasValue());
     }
 
@@ -145,5 +145,24 @@ public class MaybeUnitTests
     {
         var m = Maybe.Some<Maybe<int>>(5);
         Assert.True(m.FlatMap().EqualsTo(5));
+    }
+
+    [Fact]
+    public void Maybe_CanTryFirst()
+    {
+        var c = new[] { 3, 4, 5 };
+
+        var first = c.TryFirst();
+        Assert.Equal(3, first);
+    }
+
+    [Fact]
+    public void Maybe_CanTryFirstWithPredicate()
+    {
+        var c = new[] { 3, 4, 5 }.Select(i => new SimpleClass(i));
+
+        var first = c.TryFirst(e => e.Value > 3);
+
+        Assert.Equal(4, first.Select(e => e.Value));
     }
 }

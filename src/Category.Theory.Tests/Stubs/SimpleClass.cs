@@ -1,3 +1,3 @@
 namespace Category.Theory.Stubs;
 
-record SimpleClass();
+record SimpleClass(int Value);
