@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace Category.Theory.Monads
 {
@@ -75,6 +76,52 @@ namespace Category.Theory.Monads
             }
 
             return t1.SelectMany(x => t2(x).Select(y => tResult(x, y)));
+        }
+
+        /// <summary>
+        /// Select left values in the list of <see cref="Either{TLeft, TRight}"/>
+        /// </summary>
+        /// <typeparam name="TLeft"></typeparam>
+        /// <typeparam name="TRight"></typeparam>
+        /// <param name="items"></param>
+        /// <returns></returns>
+        public static IEnumerable<TLeft> SelectLefts<TLeft, TRight>(this IEnumerable<Either<TLeft, TRight>> items)
+        {
+            if (items == null)
+            {
+                yield break;
+            }
+
+            foreach (var item in items)
+            {
+                if (item.TryGetLeft(out TLeft value, out _))
+                {
+                    yield return value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Select right values in the list of <see cref="Either{TLeft, TRight}"/>
+        /// </summary>
+        /// <typeparam name="TLeft"></typeparam>
+        /// <typeparam name="TRight"></typeparam>
+        /// <param name="items"></param>
+        /// <returns></returns>
+        public static IEnumerable<TRight> SelectRights<TLeft, TRight>(this IEnumerable<Either<TLeft, TRight>> items)
+        {
+            if (items == null)
+            {
+                yield break;
+            }
+
+            foreach (var item in items)
+            {
+                if (item.TryGetRight(out TRight value, out _))
+                {
+                    yield return value;
+                }
+            }
         }
 
         /// <summary>
