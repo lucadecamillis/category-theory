@@ -122,7 +122,7 @@ public class MaybeUnitTests
         Assert.False(Maybe.Some(5).EqualsTo(4));
         Assert.False(Maybe.None<int>().EqualsTo(3));
 
-        Assert.Equal(Maybe.Some(5), 5);
+        Assert.Equal(5, Maybe.Some(5));
     }
 
     [Fact]
@@ -164,5 +164,31 @@ public class MaybeUnitTests
         var first = c.TryFirst(e => e.Value > 3);
 
         Assert.Equal(4, first.Select(e => e.Value));
+    }
+
+    [Fact]
+    public void Maybe_CanEqualsToWithStringComparison()
+    {
+        var m = Maybe.Some("some string");
+
+        Assert.True(m.EqualsTo("Some String", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public void Maybe_If()
+    {
+        var m = Maybe.Some(3);
+
+        Assert.True(m.If(e => e > 2));
+        Assert.False(m.If(e => e > 3));
+    }
+
+    [Fact]
+    public void Maybe_If_None()
+    {
+        Maybe<int> m = None.Instance;
+
+        Assert.False(m.If(e => e > 2));
+        Assert.False(m.If(e => e > 3));
     }
 }

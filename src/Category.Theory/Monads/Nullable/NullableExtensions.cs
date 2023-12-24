@@ -129,7 +129,7 @@ namespace Category.Theory.Nullable
                 throw new ArgumentNullException(nameof(tresult));
             }
 
-            return n1.SelectMany<TResult>(x => n2(x).Select(y => tresult(x, y)));
+            return n1.SelectMany(x => n2(x).Select(y => tresult(x, y)));
         }
 
         /// <summary>
@@ -159,7 +159,7 @@ namespace Category.Theory.Nullable
                 throw new ArgumentNullException(nameof(tresult));
             }
 
-            return n1.SelectMany(x => n2(x).Select<TResult>(y => tresult(x, y)));
+            return n1.SelectMany(x => n2(x).Select(y => tresult(x, y)));
         }
 
         /// <summary>
@@ -176,6 +176,26 @@ namespace Category.Theory.Nullable
             }
 
             return Maybe.None<T>();
+        }
+
+        public static void IfSome<T>(this Nullable<T> nullable, Action<T> action) where T : struct
+        {
+            if (nullable.HasValue)
+            {
+                action?.Invoke(nullable.Value);
+            }
+        }
+
+        /// <summary>
+        /// Check whether the given nullable entity is equal to the given value 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="nullable"></param>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        public static bool EqualsTo<T>(this Nullable<T> nullable, T item) where T : struct
+        {
+            return nullable.HasValue && nullable.Value.Equals(item);
         }
     }
 }

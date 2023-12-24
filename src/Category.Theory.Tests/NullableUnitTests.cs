@@ -111,4 +111,23 @@ public class NullableUnitTests
             select new { n, i };
         Assert.False(pair.HasValue());
     }
+
+    [Fact]
+    public void Nullable_IfSome()
+    {
+        int? number = 2;
+
+        int result = 0;
+        number.IfSome(e => result = e);
+
+        Assert.Equal(2, result);
+    }
+
+    [Fact]
+    public void Nullable_EqualsTo()
+    {
+        int? number = 2;
+
+        Assert.True(number.EqualsTo(2));
+    }
 }

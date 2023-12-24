@@ -114,7 +114,7 @@ public class OneOfUnitTests
         Assert.True(parseFailure.HasT0());
     }
 
-    private OneOf<string, None, int> TryParseNumber(string candidate)
+    private OneOf<string, None, int> TryParseNumber(string? candidate)
     {
         if (string.IsNullOrWhiteSpace(candidate))
         {

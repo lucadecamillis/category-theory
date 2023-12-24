@@ -218,6 +218,28 @@ namespace Category.Theory.Monads
             return None<T>.Instance;
         }
 
+        /// <summary>
+        /// Check whether the given condition is true on an existing element
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="maybe"></param>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
+        public static bool If<T>(this Maybe<T> maybe, Func<T, bool> predicate)
+        {
+            if (maybe == null)
+            {
+                throw new ArgumentNullException(nameof(maybe));
+            }
+
+            if (predicate == null)
+            {
+                throw new ArgumentNullException(nameof(predicate));
+            }
+
+            return maybe.TryGetValue(out T value) && predicate(value);
+        }
+
         public static Maybe<T> IfSome<T>(this Maybe<T> maybe, Action<T> action)
         {
             if (maybe == null)
@@ -524,6 +546,18 @@ namespace Category.Theory.Monads
             return maybe.Match(
                 someFunc: e => Either.Right<TLeft, Maybe<T>>(Maybe.Some(e)),
                 noneFunc: () => Either.Left<TLeft, Maybe<T>>(left));
+        }
+
+        /// <summary>
+        /// <see cref="Maybe{T}.EqualsTo(T)"/> implementation extended with string comparison
+        /// </summary>
+        /// <param name="maybe"></param>
+        /// <param name="item"></param>
+        /// <param name="comparisonType"></param>
+        /// <returns></returns>
+        public static bool EqualsTo(this Maybe<string> maybe, string item, StringComparison comparisonType)
+        {
+            return maybe.TryGetValue(out string current) && string.Equals(current, item, comparisonType);
         }
     }
 }
