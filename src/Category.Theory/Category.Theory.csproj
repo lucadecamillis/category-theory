@@ -9,7 +9,7 @@
     <PackageDescription>Provides C# implementation of few patterns and structures theorized in category theory</PackageDescription>
     <PackageProjectUrl>https://github.com/lucadecamillis/category-theory</PackageProjectUrl>
     <RepositoryUrl>https://github.com/lucadecamillis/category-theory</RepositoryUrl>
-    <Version>0.2.4</Version>
+    <Version>0.2.5</Version>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <DebugSymbols>true</DebugSymbols>
     <IncludeSymbols>true</IncludeSymbols>

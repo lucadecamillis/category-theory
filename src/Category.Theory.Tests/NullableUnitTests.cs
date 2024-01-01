@@ -130,4 +130,34 @@ public class NullableUnitTests
 
         Assert.True(number.EqualsTo(2));
     }
+
+    [Fact]
+    public void Nullable_Select()
+    {
+        int? number = 2;
+
+        int? result = number.Select(e => e + 2);
+
+        Assert.Equal(4, result);
+    }
+
+    [Fact]
+    public void Nullable_SelectMany()
+    {
+        int? number = 2;
+
+        int? result = number.SelectMany(e => e + (int?)2);
+
+        Assert.Equal(4, result);
+    }
+
+    [Fact]
+    public void Nullable_SelectMany_Null()
+    {
+        int? number = 2;
+
+        int? result = number.SelectMany(e => (int?)null);
+
+        Assert.False(result.HasValue);
+    }
 }

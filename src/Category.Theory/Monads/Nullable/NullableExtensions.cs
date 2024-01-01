@@ -23,7 +23,7 @@ namespace Category.Theory.Nullable
         }
 
         /// <summary>
-        /// Map the given nullable into a maybe
+        /// Map the given nullable into a nullable
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <typeparam name="TResult"></typeparam>
@@ -31,7 +31,9 @@ namespace Category.Theory.Nullable
         /// <param name="selector"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public static Maybe<TResult> Select<T, TResult>(this Nullable<T> nullable, Func<T, TResult> selector) where T : struct
+        public static Nullable<TResult> Select<T, TResult>(this Nullable<T> nullable, Func<T, TResult> selector)
+            where T : struct
+            where TResult : struct
         {
             if (selector == null)
             {
@@ -40,14 +42,10 @@ namespace Category.Theory.Nullable
 
             if (nullable.HasValue)
             {
-                TResult result = selector(nullable.Value);
-                if (result != null)
-                {
-                    return Maybe.Some(result);
-                }
+                return selector(nullable.Value);
             }
 
-            return Maybe.None<TResult>();
+            return null;
         }
 
         public static Maybe<TResult> SelectMany<T, TResult>(this Nullable<T> nullable, Func<T, Maybe<TResult>> selector)
@@ -64,6 +62,23 @@ namespace Category.Theory.Nullable
             }
 
             return Maybe.None<TResult>();
+        }
+
+        public static Nullable<TResult> SelectMany<T, TResult>(this Nullable<T> nullable, Func<T, TResult?> selector)
+            where T : struct
+            where TResult : struct
+        {
+            if (selector == null)
+            {
+                throw new ArgumentNullException(nameof(selector));
+            }
+
+            if (nullable.HasValue)
+            {
+                return selector(nullable.Value);
+            }
+
+            return null;
         }
 
         /// <summary>
@@ -94,7 +109,7 @@ namespace Category.Theory.Nullable
                 throw new ArgumentNullException(nameof(tresult));
             }
 
-            return n1.SelectMany(x => n2(x).Select(y => tresult(x, y)));
+            return n1.SelectMany(x => n2(x).ToMaybe(y => tresult(x, y)));
         }
 
         /// <summary>
@@ -129,7 +144,7 @@ namespace Category.Theory.Nullable
                 throw new ArgumentNullException(nameof(tresult));
             }
 
-            return n1.SelectMany(x => n2(x).Select(y => tresult(x, y)));
+            return n1.SelectMany(x => n2(x).ToMaybe(y => tresult(x, y)));
         }
 
         /// <summary>
@@ -176,6 +191,34 @@ namespace Category.Theory.Nullable
             }
 
             return Maybe.None<T>();
+        }
+
+        /// <summary>
+        /// Map the given nullable into a maybe
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TResult"></typeparam>
+        /// <param name="nullable"></param>
+        /// <param name="selector"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static Maybe<TResult> ToMaybe<T, TResult>(this Nullable<T> nullable, Func<T, TResult> selector) where T : struct
+        {
+            if (selector == null)
+            {
+                throw new ArgumentNullException(nameof(selector));
+            }
+
+            if (nullable.HasValue)
+            {
+                TResult result = selector(nullable.Value);
+                if (result != null)
+                {
+                    return Maybe.Some(result);
+                }
+            }
+
+            return Maybe.None<TResult>();
         }
 
         public static void IfSome<T>(this Nullable<T> nullable, Action<T> action) where T : struct
