@@ -82,20 +82,20 @@ namespace Category.Theory.Nullable
         }
 
         /// <summary>
-        /// Enables query syntaxt for nullable
+        /// Enables query syntax for nullable
         /// </summary>
         /// <typeparam name="T1"></typeparam>
         /// <typeparam name="T2"></typeparam>
         /// <typeparam name="TResult"></typeparam>
         /// <param name="n1"></param>
         /// <param name="n2"></param>
-        /// <param name="tresult"></param>
+        /// <param name="tResult"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
         public static Maybe<TResult> SelectMany<T1, T2, TResult>(
             this Nullable<T1> n1,
             Func<T1, Nullable<T2>> n2,
-            Func<T1, T2, TResult> tresult)
+            Func<T1, T2, TResult> tResult)
             where T1 : struct
             where T2 : struct
         {
@@ -104,29 +104,29 @@ namespace Category.Theory.Nullable
                 throw new ArgumentNullException(nameof(n2));
             }
 
-            if (tresult == null)
+            if (tResult == null)
             {
-                throw new ArgumentNullException(nameof(tresult));
+                throw new ArgumentNullException(nameof(tResult));
             }
 
-            return n1.SelectMany(x => n2(x).ToMaybe(y => tresult(x, y)));
+            return n1.SelectMany(x => n2(x).ToMaybe(y => tResult(x, y)));
         }
 
         /// <summary>
-        /// Enables query syntaxt for nullable
+        /// Enables query syntax for nullable
         /// </summary>
         /// <typeparam name="T1"></typeparam>
         /// <typeparam name="T2"></typeparam>
         /// <typeparam name="TResult"></typeparam>
         /// <param name="n1"></param>
         /// <param name="n2"></param>
-        /// <param name="tresult"></param>
+        /// <param name="tResult"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
         public static Maybe<TResult> SelectMany<T1, T2, TResult>(
             this Maybe<T1> n1,
             Func<T1, Nullable<T2>> n2,
-            Func<T1, T2, TResult> tresult)
+            Func<T1, T2, TResult> tResult)
             where T2 : struct
         {
             if (n1 == null)
@@ -139,12 +139,12 @@ namespace Category.Theory.Nullable
                 throw new ArgumentNullException(nameof(n2));
             }
 
-            if (tresult == null)
+            if (tResult == null)
             {
-                throw new ArgumentNullException(nameof(tresult));
+                throw new ArgumentNullException(nameof(tResult));
             }
 
-            return n1.SelectMany(x => n2(x).ToMaybe(y => tresult(x, y)));
+            return n1.SelectMany(x => n2(x).ToMaybe(y => tResult(x, y)));
         }
 
         /// <summary>
@@ -155,13 +155,13 @@ namespace Category.Theory.Nullable
         /// <typeparam name="TResult"></typeparam>
         /// <param name="n1"></param>
         /// <param name="n2"></param>
-        /// <param name="tresult"></param>
+        /// <param name="tResult"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
         public static Maybe<TResult> SelectMany<T1, T2, TResult>(
             this Nullable<T1> n1,
             Func<T1, Maybe<T2>> n2,
-            Func<T1, T2, TResult> tresult)
+            Func<T1, T2, TResult> tResult)
             where T1 : struct
         {
             if (n2 == null)
@@ -169,12 +169,12 @@ namespace Category.Theory.Nullable
                 throw new ArgumentNullException(nameof(n2));
             }
 
-            if (tresult == null)
+            if (tResult == null)
             {
-                throw new ArgumentNullException(nameof(tresult));
+                throw new ArgumentNullException(nameof(tResult));
             }
 
-            return n1.SelectMany(x => n2(x).Select(y => tresult(x, y)));
+            return n1.SelectMany(x => n2(x).Select(y => tResult(x, y)));
         }
 
         /// <summary>

@@ -88,7 +88,6 @@ namespace Category.Theory.Monads
             return fallbackFunc.Invoke();
         }
 
-
         /// <summary>
         /// Monadic join (where inner monad is Nullable)
         /// </summary>
