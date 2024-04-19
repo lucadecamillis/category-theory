@@ -191,4 +191,28 @@ public class MaybeUnitTests
         Assert.False(m.If(e => e > 2));
         Assert.False(m.If(e => e > 3));
     }
+
+    [Fact]
+    public void Maybe_Equal_None()
+    {
+        Assert.Equal(None.Instance, None.Instance);
+    }
+
+    [Fact]
+    public void Maybe_Equal_Some()
+    {
+        Assert.Equal(Maybe.Some(3), Maybe.Some(3));
+    }
+
+    [Fact]
+    public void Maybe_NotEqual_Some()
+    {
+        Assert.NotEqual(Maybe.Some(3), Maybe.Some(2));
+    }
+
+    [Fact]
+    public void Maybe_NotEqual_Some_None()
+    {
+        Assert.NotEqual(Maybe.Some(3), None.Instance);
+    }
 }
