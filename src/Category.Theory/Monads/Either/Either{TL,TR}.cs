@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 
 namespace Category.Theory.Monads
 {
@@ -24,19 +24,19 @@ namespace Category.Theory.Monads
         /// If True the left value is returned and the other (right) value is set the its default.
         /// If False values are returned the other way around.
         /// </summary>
-        /// <param name="value"></param>
-        /// <param name="otherValue"></param>
+        /// <param name="leftValue"></param>
+        /// <param name="rightValue"></param>
         /// <returns></returns>
-        public abstract bool TryGetLeft(out TLeft value, out TRight otherValue);
+        public abstract bool TryGetLeft(out TLeft leftValue, out TRight rightValue);
 
         /// <summary>
         /// If True the right value is returned and the other (left) value is set the its default.
         /// If False values are returned the other way around.
         /// </summary>
-        /// <param name="value"></param>
-        /// <param name="otherValue"></param>
+        /// <param name="rightValue"></param>
+        /// <param name="leftValue"></param>
         /// <returns></returns>
-        public abstract bool TryGetRight(out TRight value, out TLeft otherValue);
+        public abstract bool TryGetRight(out TRight rightValue, out TLeft leftValue);
 
         public abstract Either<TLeft, TResult> Select<TResult>(Func<TRight, TResult> selector);
 

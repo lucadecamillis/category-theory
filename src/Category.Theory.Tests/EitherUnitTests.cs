@@ -80,6 +80,20 @@ public class EitherUnitTests
         Assert.True(parseFailure.HasLeft());
     }
 
+    [Fact]
+    public void Either_CanTraverse()
+    {
+        Either<string, int>[] collection = { 2, 3, 4, 5 };
+        Assert.Equal(new[] { 2, 3, 4, 5 }, collection.Traverse(e => e).GetRightOrFallback(Array.Empty<int>()));
+    }
+
+    [Fact]
+    public void Either_CannotTraverse()
+    {
+        Either<string, int>[] collection = { 2, 3, "error", 4, 5 };
+        Assert.True(collection.Traverse(e => e).HasLeft());
+    }
+
     private Either<string, int> TryParseNumber(string candidate)
     {
         if (int.TryParse(candidate, out int result))

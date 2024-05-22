@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace Category.Theory.Monads
@@ -159,6 +159,33 @@ namespace Category.Theory.Monads
             }
 
             return either.TryGetRight(out value, out _);
+        }
+
+        /// <summary>
+        /// Traverse the given list performing the action on each element
+        /// </summary>
+        /// <typeparam name="TLeft"></typeparam>
+        /// <typeparam name="TSource"></typeparam>
+        /// <typeparam name="TResult"></typeparam>
+        /// <param name="source"></param>
+        /// <param name="selector"></param>
+        /// <returns></returns>
+        public static Either<TLeft, IList<TResult>> Traverse<TLeft, TSource, TResult>(
+            this IEnumerable<TSource> source,
+            Func<TSource, Either<TLeft, TResult>> selector)
+        {
+            IList<TResult> collection = new List<TResult>();
+            foreach (var item in source)
+            {
+                if (selector(item).TryGetLeft(out TLeft leftValue, out TResult result))
+                {
+                    // Short circuit
+                    return leftValue;
+                }
+                collection.Add(result);
+            }
+
+            return Either.Right<TLeft, IList<TResult>>(collection);
         }
     }
 }
