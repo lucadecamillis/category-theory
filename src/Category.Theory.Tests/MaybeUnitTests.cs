@@ -215,4 +215,46 @@ public class MaybeUnitTests
     {
         Assert.NotEqual(Maybe.Some(3), None.Instance);
     }
+
+    [Fact]
+    public void Maybe_CanSelectNullString()
+    {
+        Assert.False(((string?)null).TrySelectString().HasValue());
+    }
+
+    [Fact]
+    public void Maybe_CanSelectEmptyString()
+    {
+        Assert.False(string.Empty.TrySelectString().HasValue());
+    }
+
+    [Fact]
+    public void Maybe_CanSelectString()
+    {
+        Assert.Equal("sample", "sample".TrySelectString());
+    }
+
+    [Fact]
+    public void Maybe_Or_BothNone()
+    {
+        Assert.False(Maybe.None<string>().Or(None.Instance).HasValue());
+    }
+
+    [Fact]
+    public void Maybe_Or_First()
+    {
+        Assert.Equal("or", Maybe.Some("or").Or(None.Instance));
+    }
+
+    [Fact]
+    public void Maybe_Or_Second()
+    {
+        Assert.Equal("or", Maybe.None<string>().Or("or"));
+    }
+
+    [Fact]
+    public void Maybe_Or_ChooseFirst()
+    {
+        Assert.Equal("or1", Maybe.Some("or1").Or("or2"));
+    }
 }

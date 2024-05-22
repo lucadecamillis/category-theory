@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 
 namespace Category.Theory.Monads
 {
@@ -63,17 +63,17 @@ namespace Category.Theory.Monads
             return true;
         }
 
-        public override bool TryGetLeft(out TLeft value, out TRight otherValue)
+        public override bool TryGetLeft(out TLeft leftValue, out TRight rightValue)
         {
-            value = default;
-            otherValue = this.value;
+            leftValue = default;
+            rightValue = this.value;
             return false;
         }
 
-        public override bool TryGetRight(out TRight value, out TLeft otherValue)
+        public override bool TryGetRight(out TRight rightValue, out TLeft leftValue)
         {
-            value = this.value;
-            otherValue = default;
+            rightValue = this.value;
+            leftValue = default;
             return true;
         }
     }

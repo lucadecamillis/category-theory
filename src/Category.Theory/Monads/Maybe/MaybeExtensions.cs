@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Category.Theory.Linq;
@@ -110,7 +110,7 @@ namespace Category.Theory.Monads
         }
 
         /// <summary>
-        /// Enables query syntaxt for maybe
+        /// Enables query syntax for maybe
         /// </summary>
         /// <typeparam name="T1"></typeparam>
         /// <typeparam name="T2"></typeparam>
@@ -324,9 +324,20 @@ namespace Category.Theory.Monads
             }
 
             string stringValue = selector(candidate);
-            if (!string.IsNullOrWhiteSpace(stringValue))
+
+            return TrySelectString(stringValue);
+        }
+
+        /// <summary>
+        /// Check whether the given string is not null or empty
+        /// </summary>
+        /// <param name="candidate"></param>
+        /// <returns></returns>
+        public static Maybe<string> TrySelectString(this string candidate)
+        {
+            if (!string.IsNullOrWhiteSpace(candidate))
             {
-                return Maybe.Some(stringValue);
+                return Maybe.Some(candidate);
             }
 
             return Maybe.None<string>();
@@ -523,6 +534,28 @@ namespace Category.Theory.Monads
                 return new Some<T>(nullableValue.Value);
             }
             return None<T>.Instance;
+        }
+
+        /// <summary>
+        /// Perform the Or operation between the two maybes
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="maybe"></param>
+        /// <param name="other"></param>
+        /// <returns></returns>
+        public static Maybe<T> Or<T>(this Maybe<T> maybe, Maybe<T> other)
+        {
+            if (maybe.HasValue())
+            {
+                return maybe;
+            }
+
+            if (other.HasValue())
+            {
+                return other;
+            }
+
+            return Maybe.None<T>();
         }
 
         /// <summary>
