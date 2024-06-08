@@ -76,5 +76,15 @@ namespace Category.Theory.Monads
             leftValue = default;
             return true;
         }
+
+        public override bool EqualsTo(TRight right)
+        {
+            return Equals(this.value, right);
+        }
+
+        public override bool EqualsTo(TLeft left)
+        {
+            return false;
+        }
     }
 }

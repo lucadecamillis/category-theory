@@ -46,6 +46,10 @@ namespace Category.Theory.Monads
 
         public abstract void Iter(Action<TLeft> leftAction, Action<TRight> rightAction);
 
+        public abstract bool EqualsTo(TRight right);
+
+        public abstract bool EqualsTo(TLeft left);
+
         public static implicit operator Either<TLeft, TRight>(TLeft left) => new Left<TLeft, TRight>(left);
 
         public static implicit operator Either<TLeft, TRight>(TRight right) => new Right<TLeft, TRight>(right);

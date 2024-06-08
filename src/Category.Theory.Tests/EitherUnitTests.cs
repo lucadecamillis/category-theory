@@ -94,6 +94,20 @@ public class EitherUnitTests
         Assert.True(collection.Traverse(e => e).HasLeft());
     }
 
+    [Fact]
+    public void Either_EqualToLeft()
+    {
+        Assert.True(Either.Left<int, string>(4).EqualsTo(4));
+        Assert.False(Either.Right<int, string>("s").EqualsTo(4));
+    }
+
+    [Fact]
+    public void Either_EqualToRight()
+    {
+        Assert.True(Either.Right<int, string>("s").EqualsTo("s"));
+        Assert.False(Either.Left<int, string>(4).EqualsTo("s"));
+    }
+
     private Either<string, int> TryParseNumber(string candidate)
     {
         if (int.TryParse(candidate, out int result))
