@@ -67,9 +67,14 @@ namespace Category.Theory.Monads
             leftAction(this.value);
         }
 
-        public override Either<TLeft, T1Right> Select<T1Right>(Func<TRight, T1Right> selector)
+        public override Either<TLeft, TResult> Select<TResult>(Func<TRight, TResult> selector)
         {
-            return new Left<TLeft, T1Right>(this.value);
+            return new Left<TLeft, TResult>(this.value);
+        }
+
+        public override Either<TResult, TRight> SelectLeft<TResult>(Func<TLeft, TResult> selector)
+        {
+            return new Left<TResult, TRight>(selector(this.value));
         }
 
         public override Either<TLeft, T1Right> SelectMany<T1Right>(Func<TRight, Either<TLeft, T1Right>> selector)
@@ -85,6 +90,11 @@ namespace Category.Theory.Monads
         public override bool EqualsTo(TLeft left)
         {
             return Equals(this.value, left);
+        }
+
+        public override string ToString()
+        {
+            return $"Left {this.value}";
         }
     }
 }

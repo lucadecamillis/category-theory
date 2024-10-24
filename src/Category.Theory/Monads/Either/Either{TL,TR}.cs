@@ -40,6 +40,8 @@ namespace Category.Theory.Monads
 
         public abstract Either<TLeft, TResult> Select<TResult>(Func<TRight, TResult> selector);
 
+        public abstract Either<TResult, TRight> SelectLeft<TResult>(Func<TLeft, TResult> selector);
+
         public abstract Either<TLeft, TResult> SelectMany<TResult>(Func<TRight, Either<TLeft, TResult>> selector);
 
         public abstract TResult Match<TResult>(Func<TLeft, TResult> left, Func<TRight, TResult> right);

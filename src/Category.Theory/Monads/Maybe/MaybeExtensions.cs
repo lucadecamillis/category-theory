@@ -151,12 +151,7 @@ namespace Category.Theory.Monads
         /// <returns></returns>
         public static Maybe<T> FlatMap<T>(this Maybe<Maybe<T>> maybe)
         {
-            if (maybe.TryGetValue(out Maybe<T> inner))
-            {
-                return inner;
-            }
-
-            return None<T>.Instance;
+            return maybe.SelectMany(e => e);
         }
 
         /// <summary>
@@ -439,6 +434,31 @@ namespace Category.Theory.Monads
         }
 
         /// <summary>
+        /// Select the item at the given index in case the index is defined.
+        /// Otherwise return an empty object
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="source"></param>
+        /// <param name="idx"></param>
+        /// <returns></returns>
+        public static Maybe<T> Select<T>(this IReadOnlyList<T> source, int idx)
+        {
+            if (source == null)
+            {
+                // Empty collection
+                return Maybe.None<T>();
+            }
+
+            if (idx < 0 || idx >= source.Count)
+            {
+                // Index out of bound
+                return Maybe.None<T>();
+            }
+
+            return Maybe.Some(source[idx]);
+        }
+
+        /// <summary>
         /// Check whether the given source collection contains one and only one element.
         /// In that case return the element, otherwise returns an empty object
         /// </summary>
@@ -527,6 +547,31 @@ namespace Category.Theory.Monads
             return source.Where(predicate).TryFirst();
         }
 
+        /// <summary>
+        /// Return the first occurrence of the element in the source that has a value
+        /// or an empty object in case the list is empty or all items are emtpy
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static Maybe<T> TryFirstNotEmpty<T>(this IEnumerable<Maybe<T>> source)
+        {
+            if (source == null)
+            {
+                return Maybe.None<T>();
+            }
+
+            foreach (Maybe<T> item in source)
+            {
+                if (item.TryGetValue(out T t))
+                {
+                    return t;
+                }
+            }
+
+            return Maybe.None<T>();
+        }
+
         private static Maybe<T> NullableToMaybe<T>(T? nullableValue) where T : struct
         {
             if (nullableValue.HasValue)
@@ -543,12 +588,24 @@ namespace Category.Theory.Monads
         /// <param name="maybe"></param>
         /// <param name="other"></param>
         /// <returns></returns>
-        public static Maybe<T> Or<T>(this Maybe<T> maybe, Maybe<T> other)
+        public static Maybe<T> Or<T>(this Maybe<T> maybe, Func<Maybe<T>> otherSelector)
         {
+            if (maybe == null)
+            {
+                throw new ArgumentNullException(nameof(maybe));
+            }
+
+            if (otherSelector == null)
+            {
+                throw new ArgumentNullException(nameof(otherSelector));
+            }
+
             if (maybe.HasValue())
             {
                 return maybe;
             }
+
+            var other = otherSelector.Invoke();
 
             if (other.HasValue())
             {
@@ -569,15 +626,8 @@ namespace Category.Theory.Monads
         public static Either<TLeft, T> ToEither<TLeft, T>(this Maybe<T> maybe, TLeft left)
         {
             return maybe.Match(
-                someFunc: e => Either.Right<TLeft, T>(e),
+                someFunc: Either.Right<TLeft, T>,
                 noneFunc: () => Either.Left<TLeft, T>(left));
-        }
-
-        public static Either<TLeft, Maybe<T>> ToOptionalEither<TLeft, T>(this Maybe<T> maybe, TLeft left)
-        {
-            return maybe.Match(
-                someFunc: e => Either.Right<TLeft, Maybe<T>>(Maybe.Some(e)),
-                noneFunc: () => Either.Left<TLeft, Maybe<T>>(left));
         }
 
         /// <summary>
