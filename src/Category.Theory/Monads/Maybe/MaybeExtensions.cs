@@ -1,7 +1,7 @@
-﻿using System;
+﻿using Category.Theory.Linq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Category.Theory.Linq;
 
 namespace Category.Theory.Monads
 {
@@ -628,6 +628,26 @@ namespace Category.Theory.Monads
             return maybe.Match(
                 someFunc: Either.Right<TLeft, T>,
                 noneFunc: () => Either.Left<TLeft, T>(left));
+        }
+
+        /// <summary>
+        /// Natural transformation from <see cref="Maybe"/> into <see cref="Either"/>
+        /// </summary>
+        /// <typeparam name="TLeft"></typeparam>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="maybe"></param>
+        /// <param name="left"></param>
+        /// <returns></returns>
+        public static Either<TLeft, T> ToEither<TLeft, T>(this Maybe<T> maybe, Func<TLeft> left)
+        {
+            if (maybe.TryGetValue(out var value))
+            {
+                return value;
+            }
+            else
+            {
+                return left();
+            }
         }
 
         /// <summary>

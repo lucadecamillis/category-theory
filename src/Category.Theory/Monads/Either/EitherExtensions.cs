@@ -29,6 +29,20 @@ namespace Category.Theory.Monads
             return fallbackValue;
         }
 
+        public static TRight GetRightOrThrow<TLeft, TRight>(
+            this Either<TLeft, TRight> either,
+            Func<TLeft, Exception> exceptionFunc)
+        {
+            if (either.TryGetRight(out var rightValue, out var leftValue))
+            {
+                return rightValue;
+            }
+            else
+            {
+                throw exceptionFunc(leftValue);
+            }
+        }
+
         /// <summary>
         /// Convert the given either to maybe (right value)
         /// </summary>

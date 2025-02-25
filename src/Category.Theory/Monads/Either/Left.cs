@@ -2,7 +2,7 @@
 
 namespace Category.Theory.Monads
 {
-    internal class Left<TLeft, TRight> : Either<TLeft, TRight>
+    internal class Left<TLeft, TRight> : Either<TLeft, TRight>, IEquatable<Left<TLeft, TRight>>
     {
         private readonly TLeft value;
 
@@ -46,13 +46,13 @@ namespace Category.Theory.Monads
         public override bool TryGetLeft(out TLeft leftValue, out TRight rightValue)
         {
             leftValue = this.value;
-            rightValue = default;
+            rightValue = default(TRight);
             return true;
         }
 
         public override bool TryGetRight(out TRight rightValue, out TLeft leftValue)
         {
-            rightValue = default;
+            rightValue = default(TRight);
             leftValue = this.value;
             return false;
         }
@@ -90,6 +90,31 @@ namespace Category.Theory.Monads
         public override bool EqualsTo(TLeft left)
         {
             return Equals(this.value, left);
+        }
+
+        public bool Equals(Left<TLeft, TRight> other)
+        {
+            if (other == null)
+            {
+                return false;
+            }
+
+            return Equals(this.value, other.value);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is Left<TLeft, TRight> other)
+            {
+                return this.Equals(other);
+            }
+
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return this.value.GetHashCode();
         }
 
         public override string ToString()
