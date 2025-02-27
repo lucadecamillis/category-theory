@@ -184,11 +184,11 @@ namespace Category.Theory.Monads
         /// <param name="source"></param>
         /// <param name="selector"></param>
         /// <returns></returns>
-        public static Either<TLeft, IList<TResult>> Traverse<TLeft, TSource, TResult>(
+        public static Either<TLeft, IReadOnlyList<TResult>> Traverse<TLeft, TSource, TResult>(
             this IEnumerable<TSource> source,
             Func<TSource, Either<TLeft, TResult>> selector)
         {
-            IList<TResult> collection = new List<TResult>();
+            List<TResult> collection = new List<TResult>();
             foreach (var item in source)
             {
                 if (selector(item).TryGetLeft(out TLeft leftValue, out TResult result))
@@ -199,7 +199,7 @@ namespace Category.Theory.Monads
                 collection.Add(result);
             }
 
-            return Either.Right<TLeft, IList<TResult>>(collection);
+            return Either.Right<TLeft, IReadOnlyList<TResult>>(collection);
         }
     }
 }
