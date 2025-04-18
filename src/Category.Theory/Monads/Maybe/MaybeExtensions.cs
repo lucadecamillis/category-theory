@@ -623,7 +623,7 @@ namespace Category.Theory.Monads
         /// <param name="maybe"></param>
         /// <param name="left"></param>
         /// <returns></returns>
-        public static Either<TLeft, T> ToEither<TLeft, T>(this Maybe<T> maybe, TLeft left)
+        public static Either<TLeft, T> Or<TLeft, T>(this Maybe<T> maybe, TLeft left)
         {
             return maybe.Match(
                 someFunc: Either.Right<TLeft, T>,
@@ -638,7 +638,7 @@ namespace Category.Theory.Monads
         /// <param name="maybe"></param>
         /// <param name="left"></param>
         /// <returns></returns>
-        public static Either<TLeft, T> ToEither<TLeft, T>(this Maybe<T> maybe, Func<TLeft> left)
+        public static Either<TLeft, T> Or<TLeft, T>(this Maybe<T> maybe, Func<TLeft> left)
         {
             if (maybe.TryGetValue(out var value))
             {

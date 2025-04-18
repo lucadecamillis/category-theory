@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 
 namespace Category.Theory.Monads
 {
@@ -19,6 +19,11 @@ namespace Category.Theory.Monads
         public override bool HasValue()
         {
             return true;
+        }
+
+        public override bool Empty()
+        {
+            return false;
         }
 
         public override bool TryGetValue(out T value)

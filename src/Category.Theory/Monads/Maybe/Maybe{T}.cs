@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -12,6 +12,8 @@ namespace Category.Theory.Monads
         }
 
         public abstract bool HasValue();
+
+        public abstract bool Empty();
 
         public abstract bool TryGetValue(out T value);
 
@@ -115,6 +117,6 @@ namespace Category.Theory.Monads
 
         public static implicit operator Maybe<T>(T value) => new Some<T>(value);
 
-        public static implicit operator Maybe<T>(Types.None _) => new None<T>();
+        public static implicit operator Maybe<T>(Types.None _) => None<T>.Instance;
     }
 }

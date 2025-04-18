@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 
 namespace Category.Theory.Monads
 {
@@ -6,9 +6,19 @@ namespace Category.Theory.Monads
     {
         internal static Maybe<T> Instance { get; } = new None<T>();
 
+        private None()
+        {
+            
+        }
+
         public override bool HasValue()
         {
             return false;
+        }
+
+        public override bool Empty()
+        {
+            return true;
         }
 
         public override bool TryGetValue(out T value)

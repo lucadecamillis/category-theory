@@ -237,7 +237,7 @@ public class MaybeUnitTests
     [Fact]
     public void Maybe_Or_BothNone()
     {
-        Assert.False(Maybe.None<string>().Or(() => None.Instance).HasValue());
+        Assert.False(Maybe.None<string>().Or(() => Maybe.None<string>()).HasValue());
     }
 
     [Fact]
@@ -249,12 +249,12 @@ public class MaybeUnitTests
     [Fact]
     public void Maybe_Or_Second()
     {
-        Assert.Equal("or", Maybe.None<string>().Or(() => "or"));
+        Assert.Equal("or", Maybe.None<string>().Or(() => Maybe.Some("or")));
     }
 
     [Fact]
     public void Maybe_Or_ChooseFirst()
     {
-        Assert.Equal("or1", Maybe.Some("or1").Or(() => "or2"));
+        Assert.Equal("or1", Maybe.Some("or1").Or(() => Maybe.Some("or2")));
     }
 }
